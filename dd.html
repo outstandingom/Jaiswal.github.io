@@ -1,558 +1,408 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Send, Bot, User, ChevronDown, ChevronUp, ExternalLink, Youtube } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-  links?: Array<{
-    text: string;
-    url: string;
-    description?: string;
-    icon?: React.ReactNode;
-  }>;
-}
-
-const ChatAssistant: React.FC = () => {
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Hello! I'm your construction assistant. I can help you with:\n• Finding professionals (architects, contractors, engineers)\n• Material suppliers (retailers, wholesalers, manufacturers)\n• Project planning & cost estimation\n• Construction guidance and best practices\n\nWhat would you like to know about your construction project?",
-      isUser: false,
-      timestamp: new Date()
-    }
-  ]);
-  const [showSuggestions, setShowSuggestions] = useState(true);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
-
-  // Provider registration tutorial video
-  const PROVIDER_REGISTRATION_VIDEO = "https://youtu.be/ZTot_xnUll8";
-  const PROVIDER_REGISTRATION_PAGE = "https://buildonclicks.com/auth?type=provider";
-
-  // Website links mapping
-  const websiteLinks = {
-    professionals: {
-      maintenance: "https://buildonclicks.com/professionals?type=maintenance",
-      retailer: "https://buildonclicks.com/professionals?type=retailer",
-      contractor: "https://buildonclicks.com/professionals?type=contractors",
-      wholesaler: "https://buildonclicks.com/professionals?type=wholesaler",
-      manufacturer: "https://buildonclicks.com/professionals?type=manufacturers",
-      engineer: "https://buildonclicks.com/professionals?type=engineers",
-      architect: "https://buildonclicks.com/professionals?type=architects",
-      designer: "https://buildonclicks.com/professionals?type=designers"
-    },
-    pages: {
-      about: "https://buildonclicks.com/about",
-      contact: "https://buildonclicks.com/contact",
-      auth: "https://buildonclicks.com/auth",
-      myRequirements: "https://buildonclicks.com/my-requirements",
-      providerDashboard: "https://buildonclicks.com/provider-dashboard",
-      profile: "https://buildonclicks.com/profile",
-      postRequirement: "https://buildonclicks.com/post-requirement",
-      subscription: "https://buildonclicks.com/subscription"
-    }
-  };
-
-  const containsHindi = (text: string): boolean => /[\u0900-\u097F]/.test(text);
-
-  const cleanResponseText = (text: string): string => {
-    return text
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
-      .replace(/#{1,6}\s?/g, '')
-      .replace(/\[.*?\]\(.*?\)/g, (match) => {
-        const linkText = match.match(/\[(.*?)\]/);
-        return linkText ? linkText[1] : '';
-      })
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
-  };
-
-  // Enhanced detection function with provider registration detection
-  const detectRelevantLinks = (userMessage: string, isHindi: boolean) => {
-    const msg = userMessage.toLowerCase();
-    const links = [];
-    
-    // Detect provider registration queries
-    const providerRegistrationKeywords = [
-      'how to register as provider',
-      'how to register as a provider',
-      'register as provider',
-      'become a provider',
-      'provider registration',
-      'sign up as provider',
-      'join as provider',
-      'provider sign up',
-      'service provider registration',
-      'प्रदाता के रूप में पंजीकरण',
-      'प्रदाता पंजीकरण',
-      'प्रदाता बनें',
-      'प्रदाता रजिस्टर',
-      'सेवा प्रदाता पंजीकरण'
-    ];
-
-    const isProviderRegistrationQuery = providerRegistrationKeywords.some(keyword => 
-      msg.includes(keyword.toLowerCase())
-    );
-
-    // Add provider registration video link if query matches
-    if (isProviderRegistrationQuery) {
-      links.push({
-        text: isHindi ? "प्रदाता पंजीकरण ट्यूटोरियल वीडियो" : "Provider Registration Tutorial Video",
-        url: PROVIDER_REGISTRATION_VIDEO,
-        description: isHindi ? "वीडियो देखें और चरण-दर-चरण सीखें" : "Watch step-by-step tutorial video",
-        icon: <Youtube className="w-3 h-3" />
-      });
-      
-      links.push({
-        text: isHindi ? "प्रदाता के रूप में पंजीकरण करें" : "Register as Provider",
-        url: PROVIDER_REGISTRATION_PAGE,
-        description: isHindi ? "प्रदाता पंजीकरण पृष्ठ पर जाएं" : "Go to provider registration page"
-      });
-    }
-    
-    // Detect professionals links
-    if (msg.includes('plumber') || msg.includes('repair') || msg.includes('maintenance') || msg.includes('मरम्मत')) {
-      links.push({
-        text: isHindi ? "रखरखाव पेशेवर ढूंढें" : "Find Maintenance Professionals",
-        url: websiteLinks.professionals.maintenance
-      });
-    }
-    if (msg.includes('contractor') || msg.includes('builder') || msg.includes('ठेकेदार')) {
-      links.push({
-        text: isHindi ? "ठेकेदार ढूंढें" : "Find Contractors",
-        url: websiteLinks.professionals.contractor
-      });
-    }
-    if (msg.includes('architect') || msg.includes('design') || msg.includes('वास्तुकार')) {
-      links.push({
-        text: isHindi ? "वास्तुकार ढूंढें" : "Find Architects",
-        url: websiteLinks.professionals.architect
-      });
-    }
-    if (msg.includes('material') || msg.includes('cement') || msg.includes('steel') || msg.includes('brick') || msg.includes('सामग्री')) {
-      links.push({
-        text: isHindi ? "सामग्री आपूर्तिकर्ता" : "Material Suppliers",
-        url: websiteLinks.professionals.retailer
-      });
-    }
-    if (msg.includes('engineer') || msg.includes('structural') || msg.includes('इंजीनियर')) {
-      links.push({
-        text: isHindi ? "इंजीनियर ढूंढें" : "Find Engineers",
-        url: websiteLinks.professionals.engineer
-      });
-    }
-    if (msg.includes('designer') || msg.includes('interior') || msg.includes('डिजाइनर')) {
-      links.push({
-        text: isHindi ? "डिजाइनर ढूंढें" : "Find Designers",
-        url: websiteLinks.professionals.designer
-      });
-    }
-    if (msg.includes('manufacturer') || msg.includes('factory') || msg.includes('निर्माता')) {
-      links.push({
-        text: isHindi ? "निर्माता ढूंढें" : "Find Manufacturers",
-        url: websiteLinks.professionals.manufacturer
-      });
-    }
-    if (msg.includes('wholesaler') || msg.includes('distributor') || msg.includes('थोक व्यापारी')) {
-      links.push({
-        text: isHindi ? "थोक व्यापारी ढूंढें" : "Find Wholesalers",
-        url: websiteLinks.professionals.wholesaler
-      });
-    }
-    if (msg.includes('retailer') || msg.includes('dealer') || msg.includes('खुदरा विक्रेता')) {
-      links.push({
-        text: isHindi ? "खुदरा विक्रेता ढूंढें" : "Find Retailers",
-        url: websiteLinks.professionals.retailer
-      });
-    }
-    
-    // Detect navigation/page links
-    if (msg.includes('profile') || msg.includes('मेरी प्रोफाइल') || msg.includes('प्रोफ़ाइल')) {
-      links.push({
-        text: isHindi ? "मेरी प्रोफाइल देखें" : "View My Profile",
-        url: websiteLinks.pages.profile,
-        description: isHindi ? "अपनी प्रोफ़ाइल देखें और अपनी जानकारी अपडेट करें" : "View and update your profile information"
-      });
-    }
-    if (msg.includes('dashboard') || msg.includes('डैशबोर्ड') || msg.includes('provider') || msg.includes('प्रदाता')) {
-      links.push({
-        text: isHindi ? "प्रदाता डैशबोर्ड" : "Provider Dashboard",
-        url: websiteLinks.pages.providerDashboard,
-        description: isHindi ? "पेशेवरों के लिए डैशबोर्ड" : "Dashboard for service providers"
-      });
-    }
-    if (msg.includes('post requirement') || msg.includes('post requi') || msg.includes('requirement post') || msg.includes('आवश्यकता पोस्ट करें')) {
-      links.push({
-        text: isHindi ? "आवश्यकता पोस्ट करें" : "Post a Requirement",
-        url: websiteLinks.pages.postRequirement,
-        description: isHindi ? "अपनी निर्माण आवश्यकता पोस्ट करें" : "Post your construction requirement"
-      });
-    }
-    if (msg.includes('my requirement') || msg.includes('my requi') || msg.includes('मेरी आवश्यकता') || msg.includes('आवश्यकताएं')) {
-      links.push({
-        text: isHindi ? "मेरी आवश्यकताएं" : "My Requirements",
-        url: websiteLinks.pages.myRequirements,
-        description: isHindi ? "अपनी पोस्ट की गई आवश्यकताएं देखें" : "View your posted requirements"
-      });
-    }
-    if (msg.includes('subscription') || msg.includes('subscribe') || msg.includes('सदस्यता') || msg.includes('प्लान')) {
-      links.push({
-        text: isHindi ? "सदस्यता योजनाएं" : "Subscription Plans",
-        url: websiteLinks.pages.subscription,
-        description: isHindi ? "हमारी सदस्यता योजनाएं देखें" : "View our subscription plans"
-      });
-    }
-    if (msg.includes('login') || msg.includes('signin') || msg.includes('sign up') || msg.includes('register') || msg.includes('लॉगिन') || msg.includes('रजिस्टर')) {
-      // Don't add this link if it's specifically about provider registration (already handled)
-      if (!isProviderRegistrationQuery) {
-        links.push({
-          text: isHindi ? "लॉगिन / रजिस्टर करें" : "Login / Register",
-          url: websiteLinks.pages.auth,
-          description: isHindi ? "अपने खाते में लॉगिन करें या नया खाता बनाएं" : "Login to your account or create new account"
-        });
-      }
-    }
-    if (msg.includes('about') || msg.includes('हमारे बारे में') || msg.includes('जानकारी')) {
-      links.push({
-        text: isHindi ? "हमारे बारे में" : "About Us",
-        url: websiteLinks.pages.about,
-        description: isHindi ? "BuildOnClicks के बारे में जानें" : "Learn about BuildOnClicks"
-      });
-    }
-    if (msg.includes('contact') || msg.includes('संपर्क करें') || msg.includes('help') || msg.includes('मदद')) {
-      links.push({
-        text: isHindi ? "संपर्क करें" : "Contact Us",
-        url: websiteLinks.pages.contact,
-        description: isHindi ? "हमसे संपर्क करें" : "Get in touch with us"
-      });
-    }
-    
-    return links;
-  };
-
-  const scrollToBottom = useCallback(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    }
-  }, []);
-
-  useEffect(() => { scrollToBottom(); }, [messages, isLoading, scrollToBottom]);
-
-  const callGeminiAPI = async (userMessage: string, isHindi: boolean, detectedLinks: any[]): Promise<{text: string, links: any[]}> => {
-    const API_KEY = import.meta.env.VITE_GOOGLE_gemni_API_KEY;
-    
-    if (!API_KEY) {
-      console.error("Gemini API key is not configured. Please add VITE_GOOGLE_gemni_API_KEY to your .env file");
-      throw new Error("API configuration error");
-    }
-    
-    // Check if it's a provider registration query
-    const providerRegistrationKeywords = [
-      'how to register as provider',
-      'how to register as a provider',
-      'register as provider',
-      'become a provider',
-      'provider registration',
-      'sign up as provider',
-      'join as provider',
-      'provider sign up',
-      'service provider registration',
-      'प्रदाता के रूप में पंजीकरण',
-      'प्रदाता पंजीकरण',
-      'प्रदाता बनें',
-      'प्रदाता रजिस्टर',
-      'सेवा प्रदाता पंजीकरण'
-    ];
-
-    const isProviderRegistrationQuery = providerRegistrationKeywords.some(keyword => 
-      userMessage.toLowerCase().includes(keyword.toLowerCase())
-    );
-
-    // If it's a provider registration query, return a specific response with the video link
-    if (isProviderRegistrationQuery) {
-      const responseText = isHindi 
-        ? `प्रदाता के रूप में पंजीकरण करना बहुत आसान है! BuildOnClicks पर प्रदाता बनने के लिए:\n\n1. हमारा ट्यूटोरियल वीडियो देखें जो प्रत्येक चरण को विस्तार से समझाता है\n2. प्रदाता पंजीकरण पृष्ठ पर जाएं\n3. अपनी व्यक्तिगत और व्यावसायिक जानकारी भरें\n4. अपनी सेवाओं और विशेषज्ञता का चयन करें\n5. सत्यापन प्रक्रिया पूरी करें\n6. अपना प्रदाता डैशबोर्ड एक्सेस करें\n\nनीचे दिए गए लिंक्स आपकी मदद करेंगे:`
-        : `Registering as a provider is very easy! To become a provider on BuildOnClicks:\n\n1. Watch our tutorial video that explains each step in detail\n2. Go to the provider registration page\n3. Fill in your personal and business information\n4. Select your services and expertise\n5. Complete the verification process\n6. Access your provider dashboard\n\nThe links below will help you:`;
-
-      return {
-        text: responseText,
-        links: detectedLinks
-      };
-    }
-
-    let linksContext = "";
-    if (detectedLinks.length > 0) {
-      linksContext = "Available resources on BuildOnClicks:\n" + detectedLinks.map(l => `- ${l.text}: ${l.url}`).join("\n");
-    }
-
-    const languageInstruction = isHindi 
-      ? "आपको हिंदी में ही उत्तर देना है। आप एक निर्माण सहायक हैं जो BuildOnClicks के लिए काम करता है।" 
-      : "Respond in English. You are a construction assistant working for BuildOnClicks.";
-
-    const prompt = `You are a helpful construction assistant for BuildOnClicks platform. 
-    User Question: "${userMessage}"
-    ${linksContext}
-    
-    Instructions:
-    1. ${languageInstruction}
-    2. Provide practical, actionable advice for construction projects
-    3. Keep responses concise and helpful
-    4. Do not use markdown formatting
-    5. Be professional and knowledgeable about construction
-    6. If relevant, mention that BuildOnClicks has professionals and resources that can help
-    7. If user asks about something not construction-related, politely redirect to construction topics`;
-
-    const requestBody = {
-      contents: [{ 
-        parts: [{ 
-          text: prompt 
-        }] 
-      }],
-      generationConfig: { 
-        temperature: 0.7, 
-        maxOutputTokens: 1000,
-        topP: 0.8,
-        topK: 40
-      },
-      safetySettings: [
-        {
-          category: "HARM_CATEGORY_HARASSMENT",
-          threshold: "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-          category: "HARM_CATEGORY_HATE_SPEECH",
-          threshold: "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          threshold: "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-          threshold: "BLOCK_MEDIUM_AND_ABOVE"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Registration Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-      ]
-    };
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Gemini API Error:", response.status, errorText);
-      throw new Error(`API Error: ${response.status}`);
-    }
+        .header {
+            background: #1a237e;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-    const data = await response.json();
-    
-    if (!data.candidates || data.candidates.length === 0) {
-      console.error("No candidates in Gemini response:", data);
-      throw new Error("No response generated");
-    }
-    
-    const rawResponse = data.candidates[0].content.parts[0].text;
-    return { 
-      text: cleanResponseText(rawResponse), 
-      links: detectedLinks 
-    };
-  };
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
 
-  const handleSendMessage = async () => {
-    if (!message.trim()) return;
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: message.trim(),
-      isUser: true,
-      timestamp: new Date()
-    };
+        .content {
+            padding: 30px;
+        }
 
-    setMessages(prev => [...prev, userMessage]);
-    const currentInput = message.trim();
-    setMessage("");
-    setIsLoading(true);
+        .test-section {
+            margin-bottom: 30px;
+        }
 
-    try {
-      const isHindi = containsHindi(currentInput);
-      const detectedLinks = detectRelevantLinks(currentInput, isHindi);
-      
-      const response = await callGeminiAPI(currentInput, isHindi, detectedLinks);
-      
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.text,
-        isUser: false,
-        timestamp: new Date(),
-        links: response.links.length > 0 ? response.links : undefined
-      };
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
 
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      // LOG ERROR TO CONSOLE FOR THE DEVELOPER TO IDENTIFY THE BUG
-      console.error('--- DEBUG BUG IDENTIFIED ---');
-      console.error('API Error Details:', error);
-      console.error('Failed for prompt:', currentInput);
-      console.error('-----------------------------');
-      
-      // SHOW NATURAL FALLBACK ON FRONTEND (No error text shown to user)
-      const isHindi = containsHindi(currentInput);
-      const detectedLinks = detectRelevantLinks(currentInput, isHindi);
-      
-      const naturalFallback = isHindi 
-        ? "मैं आपके निर्माण संबंधी प्रश्न को समझ रहा हूँ। बेहतर जानकारी के लिए आप हमारे विशेषज्ञों से संपर्क कर सकते हैं या नीचे दिए गए लिंक्स का उपयोग कर सकते हैं।"
-        : "I'm looking into your construction query. For the most accurate assistance, you can connect with our verified professionals using the links below.";
+        .test-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border 0.3s;
+        }
 
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: naturalFallback,
-        isUser: false,
-        timestamp: new Date(),
-        links: detectedLinks.length > 0 ? detectedLinks : undefined
-      };
-      
-      setMessages(prev => [...prev, aiMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        .test-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+        .test-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessage(suggestion);
-    setShowSuggestions(false);
-    setTimeout(() => handleSendMessage(), 100);
-  };
+        .test-btn:hover {
+            background: #5a67d8;
+        }
 
-  const quickSuggestions = [
-    "How to build a house?", 
-    "Find plumber for maintenance", 
-    "Construction materials needed", 
-    "Connect with architects",
-    "Go to my profile",
-    "How to register as a provider?",
-    "Post a requirement",
-    "Access provider dashboard"
-  ];
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+        }
 
-  return (
-    <div className="min-h-screen flex flex-col pb-24 sm:pb-8">
-      <Header />
-      <div className="flex-1 bg-gradient-section">
-        <div className="container mx-auto px-4 py-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
-            <Card className="shadow-lg">
-              <CardHeader className="bg-construction-primary text-white">
-                <CardTitle className="flex items-center gap-2"><Bot className="w-6 h-6" /> Construction Assistant</CardTitle>
-                <CardDescription className="text-white/80">Ask about your project - Powered by AI</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div ref={messagesContainerRef} className="h-96 overflow-y-auto p-6 bg-muted/30">
-                  <div className="space-y-4">
-                    {messages.map((msg) => (
-                      <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-                        <div className="flex gap-3 max-w-[80%]">
-                          {!msg.isUser && (
-                            <div className="w-8 h-8 bg-construction-primary rounded-full flex items-center justify-center flex-shrink-0">
-                              <Bot className="w-4 h-4 text-white" />
-                            </div>
-                          )}
-                          <div className={`px-4 py-3 rounded-2xl ${msg.isUser ? 'bg-construction-primary text-white rounded-br-none' : 'bg-white border border-gray-200 rounded-tl-none'}`}>
-                            <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
-                            {msg.links && msg.links.length > 0 && (
-                              <div className="mt-3 pt-3 border-t border-gray-200">
-                                <p className="text-xs font-medium text-gray-600 mb-2">
-                                  {msg.links.some(l => l.description) ? "Related Links:" : "Quick Links:"}
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                  {msg.links.map((link, i) => (
-                                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex flex-col items-start gap-1 text-xs px-3 py-2 bg-construction-primary/10 text-construction-primary rounded-md hover:bg-construction-primary/20 transition-colors">
-                                      <span className="flex items-center gap-1 font-medium">
-                                        {link.icon && <span className="mr-1">{link.icon}</span>}
-                                        {link.text} <ExternalLink className="w-3 h-3" />
-                                      </span>
-                                      {link.description && (
-                                        <span className="text-xs text-gray-600">{link.description}</span>
-                                      )}
-                                    </a>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            <p className={`text-xs mt-2 ${msg.isUser ? 'text-white/70' : 'text-gray-500'}`}>{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                          </div>
-                          {msg.isUser && (
-                            <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
-                              <User className="w-4 h-4 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                    {isLoading && (
-                      <div className="flex justify-start gap-3">
-                        <div className="w-8 h-8 bg-construction-primary rounded-full flex items-center justify-center"><Bot className="w-4 h-4 text-white" /></div>
-                        <div className="bg-white border border-gray-200 rounded-2xl p-3 animate-pulse">Assistant is thinking...</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+        .results h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
 
-                <div className="border-t border-gray-200 bg-white">
-                  <button onClick={() => setShowSuggestions(!showSuggestions)} className="w-full px-6 py-3 flex items-center justify-between hover:bg-gray-50 text-sm font-medium text-gray-700">
-                    Quick Suggestions {showSuggestions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </button>
-                  <AnimatePresence>
-                    {showSuggestions && (
-                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden p-4 flex flex-wrap gap-2">
-                        {quickSuggestions.map((s, i) => (
-                          <Button key={i} variant="outline" size="sm" onClick={() => handleSuggestionClick(s)} disabled={isLoading} className="text-xs">{s}</Button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+        .video-link {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
 
-                <div className="border-t border-gray-200 p-6 bg-white">
-                  <div className="flex gap-4">
-                    <Textarea value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask your construction question or request a page..." className="min-h-[80px] resize-none" disabled={isLoading} />
-                    <Button onClick={handleSendMessage} disabled={!message.trim() || isLoading} className="bg-construction-primary hover:bg-construction-primary/90 px-6 h-auto">
-                      <Send className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+        .video-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .youtube-icon {
+            color: #FF0000;
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .video-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .video-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .detected-text {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .test-queries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .query-btn {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #bbdefb;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .query-btn:hover {
+            background: #bbdefb;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Provider Registration Detector</h1>
+            <p>Test if your message triggers provider registration YouTube video link</p>
         </div>
-      </div>
-      <Footer />
-    </div>
-  );
-};
 
-export default ChatAssistant;
+        <div class="content">
+            <div class="test-section">
+                <h2>Test Your Message</h2>
+                <input 
+                    type="text" 
+                    class="test-input" 
+                    id="messageInput" 
+                    placeholder="Type your message here... (e.g., 'how to register as a provider?')"
+                >
+                <button class="test-btn" onclick="checkProviderRegistration()">
+                    Check for Provider Registration
+                </button>
+
+                <div class="test-queries">
+                    <h3>Try these test queries:</h3>
+                    <button class="query-btn" onclick="setQuery('how to register as provider')">English: Provider Registration</button>
+                    <button class="query-btn" onclick="setQuery('प्रदाता के रूप में पंजीकरण')">Hindi: प्रदाता पंजीकरण</button>
+                    <button class="query-btn" onclick="setQuery('become a service provider')">Become a Provider</button>
+                    <button class="query-btn" onclick="setQuery('sign up as provider')">Sign up as Provider</button>
+                    <button class="query-btn" onclick="setQuery('I want to register as a provider')">Register as Provider</button>
+                </div>
+            </div>
+
+            <div class="results" id="resultsSection">
+                <h3>Detection Results</h3>
+                <div id="detectionStatus">
+                    Enter a message above to see if it triggers provider registration detection
+                </div>
+                <div id="videoSection"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>YouTube Tutorial Video: <a href="https://youtu.be/ZTot_xnUll8" target="_blank">https://youtu.be/ZTot_xnUll8</a></p>
+            <p>This simulates the provider registration detection logic from BuildOnClicks</p>
+        </div>
+    </div>
+
+    <script>
+        // YouTube tutorial video URL
+        const PROVIDER_REGISTRATION_VIDEO = "https://youtu.be/ZTot_xnUll8";
+        const PROVIDER_REGISTRATION_PAGE = "https://buildonclicks.com/auth?type=provider";
+
+        // Provider registration keywords (English and Hindi)
+        const providerRegistrationKeywords = [
+            'how to register as provider',
+            'how to register as a provider',
+            'register as provider',
+            'become a provider',
+            'provider registration',
+            'sign up as provider',
+            'join as provider',
+            'provider sign up',
+            'service provider registration',
+            'प्रदाता के रूप में पंजीकरण',
+            'प्रदाता पंजीकरण',
+            'प्रदाता बनें',
+            'प्रदाता रजिस्टर',
+            'सेवा प्रदाता पंजीकरण'
+        ];
+
+        // Hindi detection function
+        function containsHindi(text) {
+            return /[\u0900-\u097F]/.test(text);
+        }
+
+        // Main detection function
+        function detectProviderRegistration(message) {
+            const msg = message.toLowerCase();
+            let isHindi = containsHindi(message);
+            
+            // Check if message contains any provider registration keywords
+            const isProviderQuery = providerRegistrationKeywords.some(keyword => 
+                msg.includes(keyword.toLowerCase())
+            );
+
+            return {
+                isProviderQuery: isProviderQuery,
+                isHindi: isHindi,
+                message: message
+            };
+        }
+
+        // Set query from test buttons
+        function setQuery(query) {
+            document.getElementById('messageInput').value = query;
+            checkProviderRegistration();
+        }
+
+        // Main function to check provider registration
+        function checkProviderRegistration() {
+            const message = document.getElementById('messageInput').value.trim();
+            const resultsSection = document.getElementById('resultsSection');
+            const detectionStatus = document.getElementById('detectionStatus');
+            const videoSection = document.getElementById('videoSection');
+            
+            if (!message) {
+                detectionStatus.innerHTML = '<div class="error">Please enter a message to test</div>';
+                videoSection.innerHTML = '';
+                return;
+            }
+
+            // Detect provider registration
+            const result = detectProviderRegistration(message);
+
+            // Update detection status
+            if (result.isProviderQuery) {
+                detectionStatus.innerHTML = `
+                    <div class="detected-text">
+                        ✅ DETECTED! This message triggers provider registration detection<br>
+                        Language: ${result.isHindi ? 'Hindi' : 'English'}<br>
+                        Keywords found: Provider Registration Query
+                    </div>
+                `;
+
+                // Show video link
+                const videoTitle = result.isHindi 
+                    ? "प्रदाता पंजीकरण ट्यूटोरियल वीडियो" 
+                    : "Provider Registration Tutorial Video";
+                
+                const videoDesc = result.isHindi
+                    ? "वीडियो देखें और चरण-दर-चरण सीखें"
+                    : "Watch step-by-step tutorial video";
+
+                videoSection.innerHTML = `
+                    <div class="success" style="margin: 15px 0;">Showing YouTube tutorial video:</div>
+                    <a href="${PROVIDER_REGISTRATION_VIDEO}" target="_blank" class="video-link">
+                        <div class="youtube-icon">▶️</div>
+                        <div class="video-info">
+                            <h4>${videoTitle}</h4>
+                            <p>${videoDesc}</p>
+                            <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">Click to watch the tutorial</p>
+                        </div>
+                    </a>
+                    <div style="margin-top: 15px; padding: 10px; background: #e8f2fd; border-radius: 5px; border-left: 4px solid #2196F3;">
+                        <strong>Registration Page:</strong> 
+                        <a href="${PROVIDER_REGISTRATION_PAGE}" target="_blank" style="color: #2196F3; text-decoration: none;">
+                            ${PROVIDER_REGISTRATION_PAGE}
+                        </a>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
+                        <strong>What happens in the real app:</strong>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>AI Assistant detects provider registration query</li>
+                            <li>Shows YouTube tutorial video link with icon</li>
+                            <li>Provides registration page link</li>
+                            <li>Gives step-by-step instructions in user's language</li>
+                            <li>All links open in new tab for better UX</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                detectionStatus.innerHTML = `
+                    <div class="error">
+                        ❌ NOT DETECTED! This message does NOT trigger provider registration detection<br>
+                        Try using keywords like: "register as provider", "provider registration", "become a provider"
+                    </div>
+                `;
+                videoSection.innerHTML = '';
+            }
+
+            // Highlight the results section
+            resultsSection.style.animation = 'none';
+            setTimeout(() => {
+                resultsSection.style.animation = 'fadeIn 0.5s';
+            }, 10);
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .video-link {
+                animation: fadeIn 0.5s;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Allow Enter key to trigger detection
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkProviderRegistration();
+            }
+        });
+
+        // Initialize with a sample query
+        window.onload = function() {
+            document.getElementById('messageInput').value = "how to register as a provider?";
+            setTimeout(checkProviderRegistration, 500);
+        };
+    </script>
+</body>
+</html>
