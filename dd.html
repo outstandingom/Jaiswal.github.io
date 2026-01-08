@@ -1,408 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Provider Registration Test</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <title>Chat Model Test</title>
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 800px;
-            overflow: hidden;
-        }
+    .chat-box {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+    }
 
-        .header {
-            background: #1a237e;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-bottom: 10px;
+    }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+    button {
+      padding: 8px 15px;
+      cursor: pointer;
+    }
 
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .test-section {
-            margin-bottom: 30px;
-        }
-
-        .test-section h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .test-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            transition: border 0.3s;
-        }
-
-        .test-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .test-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: bold;
-        }
-
-        .test-btn:hover {
-            background: #5a67d8;
-        }
-
-        .results {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            min-height: 200px;
-        }
-
-        .results h3 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .video-link {
-            display: flex;
-            align-items: center;
-            background: white;
-            border: 2px solid #4CAF50;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            text-decoration: none;
-            color: #333;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .video-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .youtube-icon {
-            color: #FF0000;
-            font-size: 2rem;
-            margin-right: 15px;
-        }
-
-        .video-info h4 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 1.2rem;
-        }
-
-        .video-info p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .detected-text {
-            color: #4CAF50;
-            font-weight: bold;
-            margin-top: 10px;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 5px;
-            border-left: 4px solid #4CAF50;
-        }
-
-        .test-queries {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .query-btn {
-            background: #e3f2fd;
-            color: #1976d2;
-            border: 2px solid #bbdefb;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .query-btn:hover {
-            background: #bbdefb;
-            transform: translateY(-1px);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-        }
-
-        .success {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-
-        .error {
-            color: #f44336;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-        }
-    </style>
+    .output {
+      margin-top: 15px;
+      background: #eee;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Provider Registration Detector</h1>
-            <p>Test if your message triggers provider registration YouTube video link</p>
-        </div>
 
-        <div class="content">
-            <div class="test-section">
-                <h2>Test Your Message</h2>
-                <input 
-                    type="text" 
-                    class="test-input" 
-                    id="messageInput" 
-                    placeholder="Type your message here... (e.g., 'how to register as a provider?')"
-                >
-                <button class="test-btn" onclick="checkProviderRegistration()">
-                    Check for Provider Registration
-                </button>
+  <div class="chat-box">
+    <h3>Chat Model Test</h3>
 
-                <div class="test-queries">
-                    <h3>Try these test queries:</h3>
-                    <button class="query-btn" onclick="setQuery('how to register as provider')">English: Provider Registration</button>
-                    <button class="query-btn" onclick="setQuery('प्रदाता के रूप में पंजीकरण')">Hindi: प्रदाता पंजीकरण</button>
-                    <button class="query-btn" onclick="setQuery('become a service provider')">Become a Provider</button>
-                    <button class="query-btn" onclick="setQuery('sign up as provider')">Sign up as Provider</button>
-                    <button class="query-btn" onclick="setQuery('I want to register as a provider')">Register as Provider</button>
-                </div>
-            </div>
+    <textarea id="message" placeholder="Type a message...">Hello, are you working?</textarea>
+    <button onclick="sendMessage()">Send</button>
 
-            <div class="results" id="resultsSection">
-                <h3>Detection Results</h3>
-                <div id="detectionStatus">
-                    Enter a message above to see if it triggers provider registration detection
-                </div>
-                <div id="videoSection"></div>
-            </div>
-        </div>
+    <div class="output" id="output">Response will appear here...</div>
+  </div>
 
-        <div class="footer">
-            <p>YouTube Tutorial Video: <a href="https://youtu.be/ZTot_xnUll8" target="_blank">https://youtu.be/ZTot_xnUll8</a></p>
-            <p>This simulates the provider registration detection logic from BuildOnClicks</p>
-        </div>
-    </div>
+  <script type="module">
+    import Bytez from "bytez.js";
 
-    <script>
-        // YouTube tutorial video URL
-        const PROVIDER_REGISTRATION_VIDEO = "https://youtu.be/ZTot_xnUll8";
-        const PROVIDER_REGISTRATION_PAGE = "https://buildonclicks.com/auth?type=provider";
+    const key = "384fc2923909a7ce044067e1b8385e8c";
+    const sdk = new Bytez(key);
+    const model = sdk.model("openai/gpt-oss-20b");
 
-        // Provider registration keywords (English and Hindi)
-        const providerRegistrationKeywords = [
-            'how to register as provider',
-            'how to register as a provider',
-            'register as provider',
-            'become a provider',
-            'provider registration',
-            'sign up as provider',
-            'join as provider',
-            'provider sign up',
-            'service provider registration',
-            'प्रदाता के रूप में पंजीकरण',
-            'प्रदाता पंजीकरण',
-            'प्रदाता बनें',
-            'प्रदाता रजिस्टर',
-            'सेवा प्रदाता पंजीकरण'
-        ];
+    async function sendMessage() {
+      const userMessage = document.getElementById("message").value;
+      const outputDiv = document.getElementById("output");
 
-        // Hindi detection function
-        function containsHindi(text) {
-            return /[\u0900-\u097F]/.test(text);
+      outputDiv.textContent = "⏳ Waiting for response...";
+
+      try {
+        const { error, output } = await model.run([
+          {
+            role: "user",
+            content: userMessage
+          }
+        ]);
+
+        if (error) {
+          outputDiv.textContent = "❌ Error: " + JSON.stringify(error);
+        } else {
+          outputDiv.textContent =
+            "✅ Model Response:\n\n" +
+            JSON.stringify(output, null, 2);
         }
+      } catch (err) {
+        outputDiv.textContent = "❌ Exception: " + err.message;
+      }
+    }
 
-        // Main detection function
-        function detectProviderRegistration(message) {
-            const msg = message.toLowerCase();
-            let isHindi = containsHindi(message);
-            
-            // Check if message contains any provider registration keywords
-            const isProviderQuery = providerRegistrationKeywords.some(keyword => 
-                msg.includes(keyword.toLowerCase())
-            );
+    // expose function to button
+    window.sendMessage = sendMessage;
+  </script>
 
-            return {
-                isProviderQuery: isProviderQuery,
-                isHindi: isHindi,
-                message: message
-            };
-        }
-
-        // Set query from test buttons
-        function setQuery(query) {
-            document.getElementById('messageInput').value = query;
-            checkProviderRegistration();
-        }
-
-        // Main function to check provider registration
-        function checkProviderRegistration() {
-            const message = document.getElementById('messageInput').value.trim();
-            const resultsSection = document.getElementById('resultsSection');
-            const detectionStatus = document.getElementById('detectionStatus');
-            const videoSection = document.getElementById('videoSection');
-            
-            if (!message) {
-                detectionStatus.innerHTML = '<div class="error">Please enter a message to test</div>';
-                videoSection.innerHTML = '';
-                return;
-            }
-
-            // Detect provider registration
-            const result = detectProviderRegistration(message);
-
-            // Update detection status
-            if (result.isProviderQuery) {
-                detectionStatus.innerHTML = `
-                    <div class="detected-text">
-                        ✅ DETECTED! This message triggers provider registration detection<br>
-                        Language: ${result.isHindi ? 'Hindi' : 'English'}<br>
-                        Keywords found: Provider Registration Query
-                    </div>
-                `;
-
-                // Show video link
-                const videoTitle = result.isHindi 
-                    ? "प्रदाता पंजीकरण ट्यूटोरियल वीडियो" 
-                    : "Provider Registration Tutorial Video";
-                
-                const videoDesc = result.isHindi
-                    ? "वीडियो देखें और चरण-दर-चरण सीखें"
-                    : "Watch step-by-step tutorial video";
-
-                videoSection.innerHTML = `
-                    <div class="success" style="margin: 15px 0;">Showing YouTube tutorial video:</div>
-                    <a href="${PROVIDER_REGISTRATION_VIDEO}" target="_blank" class="video-link">
-                        <div class="youtube-icon">▶️</div>
-                        <div class="video-info">
-                            <h4>${videoTitle}</h4>
-                            <p>${videoDesc}</p>
-                            <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">Click to watch the tutorial</p>
-                        </div>
-                    </a>
-                    <div style="margin-top: 15px; padding: 10px; background: #e8f2fd; border-radius: 5px; border-left: 4px solid #2196F3;">
-                        <strong>Registration Page:</strong> 
-                        <a href="${PROVIDER_REGISTRATION_PAGE}" target="_blank" style="color: #2196F3; text-decoration: none;">
-                            ${PROVIDER_REGISTRATION_PAGE}
-                        </a>
-                    </div>
-                    <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
-                        <strong>What happens in the real app:</strong>
-                        <ul style="margin-top: 10px; padding-left: 20px;">
-                            <li>AI Assistant detects provider registration query</li>
-                            <li>Shows YouTube tutorial video link with icon</li>
-                            <li>Provides registration page link</li>
-                            <li>Gives step-by-step instructions in user's language</li>
-                            <li>All links open in new tab for better UX</li>
-                        </ul>
-                    </div>
-                `;
-            } else {
-                detectionStatus.innerHTML = `
-                    <div class="error">
-                        ❌ NOT DETECTED! This message does NOT trigger provider registration detection<br>
-                        Try using keywords like: "register as provider", "provider registration", "become a provider"
-                    </div>
-                `;
-                videoSection.innerHTML = '';
-            }
-
-            // Highlight the results section
-            resultsSection.style.animation = 'none';
-            setTimeout(() => {
-                resultsSection.style.animation = 'fadeIn 0.5s';
-            }, 10);
-        }
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .video-link {
-                animation: fadeIn 0.5s;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Allow Enter key to trigger detection
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkProviderRegistration();
-            }
-        });
-
-        // Initialize with a sample query
-        window.onload = function() {
-            document.getElementById('messageInput').value = "how to register as a provider?";
-            setTimeout(checkProviderRegistration, 500);
-        };
-    </script>
 </body>
 </html>
