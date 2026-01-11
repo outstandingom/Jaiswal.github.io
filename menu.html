@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
     <!-- ==================== SEO OPTIMIZATION ==================== -->
-    <title>Complete Menu | Jaiswal Family Restaurant | Best Food in Neelbad, Bhopal</title>
-    <meta name="description" content="Explore the complete menu of Jaiswal Family Restaurant - Best restaurant in Neelbad, Bhopal. Featuring breakfast, thalis, pizzas, pasta, burgers, Chinese food, and more. Veg & Non-Veg options available.">
-    <meta name="keywords" content="restaurant menu Neelbad Bhopal, Jaiswal restaurant menu, food menu Neelbad, thali menu, breakfast menu, pizza menu Bhopal, Chinese food Neelbad, pasta menu, burger menu, momos Bhopal">
+    <title>Complete Restaurant Menu | Jaiswal Family Restaurant | Best Veg & Non-Veg Food in Neelbad, Bhopal</title>
+    <meta name="description" content="Complete menu of Jaiswal Family Restaurant - Best restaurant in Neelbad, Bhopal. Featuring breakfast, thalis, Indian cuisine, Chinese food, pizzas, pasta, burgers, beverages and more.">
+    <meta name="keywords" content="restaurant menu Neelbad Bhopal, Jaiswal restaurant menu, veg non-veg menu, thali menu, breakfast menu, Chinese food, pizza menu, burger menu, momos Bhopal, complete restaurant menu">
     <meta name="author" content="Jaiswal Family Restaurant">
     <meta name="robots" content="index, follow">
     
@@ -16,7 +16,7 @@
     
     <!-- Open Graph -->
     <meta property="og:title" content="Complete Menu | Jaiswal Family Restaurant, Neelbad Bhopal">
-    <meta property="og:description" content="Explore our complete menu featuring breakfast, thalis, pizzas, pasta, burgers, Chinese food and more in Neelbad, Bhopal.">
+    <meta property="og:description" content="Explore our complete menu featuring Indian, Chinese, Italian cuisine and more at the best restaurant in Neelbad, Bhopal.">
     <meta property="og:type" content="restaurant.menu">
     <meta property="og:url" content="https://jaiswalrestaurant.com/menu.html">
     <meta property="og:image" content="https://i.ibb.co/WQ640Vc/IMG-20260108-WA0006.jpg">
@@ -26,35 +26,55 @@
     {
       "@context": "https://schema.org",
       "@type": "Menu",
-      "name": "Jaiswal Family Restaurant Menu",
-      "description": "Complete menu of Jaiswal Family Restaurant in Neelbad, Bhopal",
+      "name": "Jaiswal Family Restaurant Complete Menu",
+      "description": "Complete menu of Jaiswal Family Restaurant in Neelbad, Bhopal featuring Indian, Chinese, Italian and Fast Food",
       "url": "https://jaiswalrestaurant.com/menu.html",
       "mainEntityOfPage": "https://jaiswalrestaurant.com/menu.html",
       "hasMenuSection": [
         {
           "@type": "MenuSection",
           "name": "Breakfast",
-          "description": "Morning breakfast items available from 7:00 AM to 11:00 AM"
+          "description": "Morning breakfast items"
         },
         {
           "@type": "MenuSection",
           "name": "Thali Meals",
-          "description": "Complete traditional Indian thali meals"
+          "description": "Complete traditional Indian meals"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Veg Starters",
+          "description": "Indian and Chinese vegetarian appetizers"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Non-Veg Starters",
+          "description": "Indian and Chinese non-vegetarian appetizers"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Veg Main Course",
+          "description": "Vegetarian main course dishes"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Non-Veg Main Course",
+          "description": "Non-vegetarian main course dishes"
         },
         {
           "@type": "MenuSection",
           "name": "Pizza",
-          "description": "Freshly baked pizzas with various toppings"
+          "description": "Freshly baked pizzas"
         },
         {
           "@type": "MenuSection",
           "name": "Pasta",
-          "description": "Italian pasta dishes with Indian flavors"
+          "description": "Italian pasta dishes"
         },
         {
           "@type": "MenuSection",
           "name": "Sandwich",
-          "description": "Fresh sandwiches with various fillings"
+          "description": "Fresh sandwiches"
         },
         {
           "@type": "MenuSection",
@@ -69,7 +89,7 @@
         {
           "@type": "MenuSection",
           "name": "Burger",
-          "description": "Juicy burgers with various patties"
+          "description": "Juicy burgers"
         },
         {
           "@type": "MenuSection",
@@ -79,7 +99,22 @@
         {
           "@type": "MenuSection",
           "name": "Chinese",
-          "description": "Indian Chinese cuisine dishes"
+          "description": "Indian Chinese cuisine"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Beverages",
+          "description": "Hot and cold drinks"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Rice & Breads",
+          "description": "Indian rice varieties and breads"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Desserts",
+          "description": "Sweet treats and desserts"
         }
       ],
       "inLanguage": "en-IN",
@@ -431,6 +466,20 @@
             margin-bottom: 3px;
         }
         
+        /* ==================== SPECIAL OFFERS ==================== */
+        .special-offer {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .special-offer h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
         /* ==================== ORDER CTA ==================== */
         .order-cta {
             background-color: var(--primary-color);
@@ -590,6 +639,12 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .menu-categories {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 10px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -651,12 +706,18 @@
     <main id="main-content" tabindex="-1">
         <section class="menu-hero">
             <div class="container">
-                <h1>Our Complete <span>Menu</span></h1>
+                <h1>Complete Restaurant <span>Menu</span></h1>
                 <p>Explore our delicious selection of dishes at Jaiswal Family Restaurant - Best restaurant in Neelbad, Bhopal</p>
                 
                 <div class="menu-categories">
                     <button class="category-btn active" onclick="scrollToSection('breakfast')">Breakfast</button>
                     <button class="category-btn" onclick="scrollToSection('thali')">Thali Meals</button>
+                    <button class="category-btn" onclick="scrollToSection('soup')">Soups</button>
+                    <button class="category-btn" onclick="scrollToSection('veg-starter')">Veg Starters</button>
+                    <button class="category-btn" onclick="scrollToSection('nonveg-starter')">Non-Veg Starters</button>
+                    <button class="category-btn" onclick="scrollToSection('veg-main')">Veg Main Course</button>
+                    <button class="category-btn" onclick="scrollToSection('nonveg-main')">Non-Veg Main Course</button>
+                    <button class="category-btn" onclick="scrollToSection('rice-breads')">Rice & Breads</button>
                     <button class="category-btn" onclick="scrollToSection('pizza')">Pizza</button>
                     <button class="category-btn" onclick="scrollToSection('pasta')">Pasta</button>
                     <button class="category-btn" onclick="scrollToSection('sandwich')">Sandwich</button>
@@ -665,6 +726,8 @@
                     <button class="category-btn" onclick="scrollToSection('burger')">Burger</button>
                     <button class="category-btn" onclick="scrollToSection('quick-bite')">Quick Bites</button>
                     <button class="category-btn" onclick="scrollToSection('chinese')">Chinese</button>
+                    <button class="category-btn" onclick="scrollToSection('beverages')">Beverages</button>
+                    <button class="category-btn" onclick="scrollToSection('desserts')">Desserts</button>
                 </div>
             </div>
         </section>
@@ -788,6 +851,977 @@
                             </ul>
                         </div>
                         <div class="item-price">₹59/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SOUPS ==================== -->
+        <section id="soup" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Soups</h2>
+                        <p class="section-subtitle">Warm and comforting soups</p>
+                    </div>
+                </div>
+                
+                <div class="special-offer">
+                    <h4>Vegetarian Soups - All at ₹40</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Cream of Tomato</h3>
+                            <p>Rich and creamy tomato soup</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Manchow</h3>
+                            <p>Spicy and tangy vegetable soup</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Sweet Corn Soup</h3>
+                            <p>Sweet corn in flavorful broth</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hot & Sour Soup</h3>
+                            <p>Spicy and tangy with vegetables</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                </div>
+                
+                <div class="special-offer">
+                    <h4>Non-Vegetarian Soups - All at ₹60</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Clear Soup</h3>
+                            <p>Light and clear chicken broth</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Hot & Sour</h3>
+                            <p>Spicy and tangy chicken soup</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Manchow</h3>
+                            <p>Chicken in spicy Manchow broth</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Sweet Corn</h3>
+                            <p>Chicken and sweet corn soup</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SALAD & APPETIZERS ==================== -->
+        <section id="salad" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Salads & Appetizers</h2>
+                        <p class="section-subtitle">Fresh starters and sides</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Green Salad</h3>
+                            <p>Fresh mixed vegetable salad</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Kabul Chana Chat</h3>
+                            <p>Spicy chickpea salad with chutneys</p>
+                        </div>
+                        <div class="item-price">₹80/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Peanut Chat</h3>
+                            <p>Tangy and spicy peanut salad</p>
+                        </div>
+                        <div class="item-price">₹80/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Papad Roasted/Fried</h3>
+                            <p>Crispy papad served with chutney</p>
+                        </div>
+                        <div class="item-price">₹15/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Papad Masala</h3>
+                            <p>Papad topped with spices and onions</p>
+                        </div>
+                        <div class="item-price">₹20/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Choice of Raita</h3>
+                            <p>Yogurt with vegetables or boondi</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                </div>
+                
+                <div class="special-offer">
+                    <h4>Any Time Favourites</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Pakoda</h3>
+                            <p>Mixed vegetable fritters</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Kalali Pakoda</h3>
+                            <p>Special gram flour fritters</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Pakoda</h3>
+                            <p>Cottage cheese fritters</p>
+                        </div>
+                        <div class="item-price">₹90/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Boiled Peanut</h3>
+                            <p>Fresh boiled peanuts with spices</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Cutlet</h3>
+                            <p>Vegetable patties served with sauce</p>
+                        </div>
+                        <div class="item-price">₹80/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Roasted Channa Masala</h3>
+                            <p>Spicy roasted chickpeas</p>
+                        </div>
+                        <div class="item-price">₹80/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VEG STARTERS ==================== -->
+        <section id="veg-starter" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Indian Veg Starters</h2>
+                        <p class="section-subtitle">Vegetarian appetizers from the tandoor</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Poshida</h3>
+                            <p>Marinated cottage cheese grilled in tandoor</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Malai Tikka</h3>
+                            <p>Creamy soft paneer tikka</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Multani Paneer</h3>
+                            <p>Paneer in rich Multani spices</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Achari Aloo</h3>
+                            <p>Potatoes marinated in pickle spices</p>
+                        </div>
+                        <div class="item-price">₹170/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Lasuni Dingree Kebab</h3>
+                            <p>Garlic flavored mushroom kebabs</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tandoor Mushroom</h3>
+                            <p>Mushrooms cooked in clay oven</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hara Bhara Kebab</h3>
+                            <p>Green vegetable kebabs</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Dahi Ke Kebab</h3>
+                            <p>Yogurt based soft kebabs</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 50px;">
+                    <div>
+                        <h2 class="section-title">Chinese Veg Starters</h2>
+                        <p class="section-subtitle">Vegetarian Chinese appetizers</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chilly Paneer</h3>
+                            <p>Paneer in spicy chilly sauce</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Crispy Corn Chilly Pepper</h3>
+                            <p>Crispy corn in chili pepper sauce</p>
+                        </div>
+                        <div class="item-price">₹160/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fleming Mushroom</h3>
+                            <p>Mushrooms in special Fleming sauce</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Cheese Ball</h3>
+                            <p>Deep fried cheese balls</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chilly Garlic Paneer</h3>
+                            <p>Paneer in chili garlic sauce</p>
+                        </div>
+                        <div class="item-price">₹180/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== NON-VEG STARTERS ==================== -->
+        <section id="nonveg-starter" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Indian Non-Veg Starters</h2>
+                        <p class="section-subtitle">Non-vegetarian appetizers from the tandoor</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fish-E-Angaar</h3>
+                            <p>Fish cooked on charcoal</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fish Amritsari</h3>
+                            <p>Fish in Amritsari style</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fish Ajwaini Tikka</h3>
+                            <p>Fish with carom seeds</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Tikka</h3>
+                            <p>Classic chicken tikka</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Malai Tikka</h3>
+                            <p>Creamy chicken tikka</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Banjara Tikka</h3>
+                            <p>Chicken in Banjara spices</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Afghani Tikka</h3>
+                            <p>Chicken in Afghani marinade</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tandoori Chicken</h3>
+                            <p>Whole chicken cooked in tandoor</p>
+                        </div>
+                        <div class="item-price">₹350/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Egg Bhurji</h3>
+                            <p>Spicy scrambled eggs</p>
+                        </div>
+                        <div class="item-price">₹90/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Bhuna Mutton</h3>
+                            <p>Dry cooked mutton starter</p>
+                        </div>
+                        <div class="item-price">₹250/-</div>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 50px;">
+                    <div>
+                        <h2 class="section-title">Chinese Non-Veg Starters</h2>
+                        <p class="section-subtitle">Non-vegetarian Chinese appetizers</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Pepper Garlic Chicken</h3>
+                            <p>Chicken in pepper garlic sauce</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Sweet & Spicy Crispy Chicken</h3>
+                            <p>Crispy chicken in sweet-spicy sauce</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fish Finger</h3>
+                            <p>Breaded fish fingers</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fish Fry</h3>
+                            <p>Fried fish with spices</p>
+                        </div>
+                        <div class="item-price">₹210/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chilly Chicken</h3>
+                            <p>Chicken in chili sauce</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Pan Fried Chilly Chicken</h3>
+                            <p>Pan fried chicken in chili sauce</p>
+                        </div>
+                        <div class="item-price">₹200/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Egg Chilly</h3>
+                            <p>Egg in spicy chili sauce</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VEG MAIN COURSE ==================== -->
+        <section id="veg-main" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Veg Main Course</h2>
+                        <p class="section-subtitle">Vegetarian main course dishes</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Chettinadu</h3>
+                            <p>Paneer in Chettinadu spices</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Lababdar</h3>
+                            <p>Paneer in rich creamy gravy</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Kadai Paneer</h3>
+                            <p>Paneer in kadai masala</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Noorani Paneer</h3>
+                            <p>Paneer in Noorani style gravy</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Paneer Tikka Masala</h3>
+                            <p>Paneer tikka in rich gravy</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mutter Paneer</h3>
+                            <p>Paneer and peas in gravy</p>
+                        </div>
+                        <div class="item-price">₹190/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Kofta Dil Bahar</h3>
+                            <p>Vegetable kofta in special gravy</p>
+                        </div>
+                        <div class="item-price">₹170/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Bhindi Masala</h3>
+                            <p>Okra cooked with spices</p>
+                        </div>
+                        <div class="item-price">₹150/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Kolhapuri</h3>
+                            <p>Mixed vegetables in Kolhapuri style</p>
+                        </div>
+                        <div class="item-price">₹150/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Seasonal Vegetable</h3>
+                            <p>Fresh seasonal vegetables cooked with spices</p>
+                        </div>
+                        <div class="item-price">₹150/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hindi Chhole</h3>
+                            <p>Chickpeas cooked in North Indian style</p>
+                        </div>
+                        <div class="item-price">₹160/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Sev Tamatar</h3>
+                            <p>Tomato curry with crispy sev</p>
+                        </div>
+                        <div class="item-price">₹160/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== NON-VEG MAIN COURSE ==================== -->
+        <section id="nonveg-main" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Non-Veg Main Course</h2>
+                        <p class="section-subtitle">Non-vegetarian main course dishes</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Goan Fish Curry</h3>
+                            <p>Fish in Goan style coconut curry</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Coconut Curry</h3>
+                            <p>Chicken in coconut based curry</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Chettinadu</h3>
+                            <p>Chicken in Chettinadu spices</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Murg Hydrabadi</h3>
+                            <p>Chicken in Hyderabadi style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Tikka Masala</h3>
+                            <p>Chicken tikka in rich gravy</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Butter Chicken Masala</h3>
+                            <p>Classic butter chicken</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Home Style</h3>
+                            <p>Chicken cooked in home style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Kadai Chicken</h3>
+                            <p>Chicken in kadai masala</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mutton Rogan Josh</h3>
+                            <p>Mutton in Rogan Josh gravy</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Lai Mans</h3>
+                            <p>Mutton in Lai Mans style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mutton Home Style</h3>
+                            <p>Mutton cooked in home style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RICE & BREADS ==================== -->
+        <section id="rice-breads" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Rice & Breads</h2>
+                        <p class="section-subtitle">Indian rice varieties and breads</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Steam Rice</h3>
+                            <p>Plain steamed rice</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Jeera Rice</h3>
+                            <p>Rice cooked with cumin seeds</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Pulao</h3>
+                            <p>Vegetable pulao rice</p>
+                        </div>
+                        <div class="item-price">₹70/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Veg Handi Biryani</h3>
+                            <p>Vegetable biryani cooked in handi</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Curd Rice</h3>
+                            <p>Rice mixed with curd and tempering</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                </div>
+                
+                <div class="special-offer" style="margin-top: 30px;">
+                    <h4>Non-Veg Rice & Noodles</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Egg Fried Rice</h3>
+                            <p>Fried rice with egg</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Fried Rice</h3>
+                            <p>Fried rice with chicken</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Noodles</h3>
+                            <p>Noodles with chicken</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Egg Hakka Noodles</h3>
+                            <p>Hakka noodles with egg</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Hakka Noodles</h3>
+                            <p>Hakka noodles with chicken</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken 65</h3>
+                            <p>Spicy deep fried chicken</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Lollipop</h3>
+                            <p>Chicken wings as lollipops</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Wings</h3>
+                            <p>Spicy chicken wings</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                </div>
+                
+                <div class="special-offer" style="margin-top: 30px;">
+                    <h4>Non-Veg Biryani</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chicken Handi Biryani</h3>
+                            <p>Chicken biryani cooked in handi</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hyderabadi Chicken Biryani</h3>
+                            <p>Chicken biryani in Hyderabadi style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mutton Biryani</h3>
+                            <p>Mutton biryani with spices</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chettinadu Chicken Biryani</h3>
+                            <p>Chicken biryani in Chettinadu style</p>
+                        </div>
+                        <div class="item-price">Price on request</div>
+                    </div>
+                </div>
+                
+                <div class="section-header" style="margin-top: 50px;">
+                    <div>
+                        <h2 class="section-title">Dal & Indian Breads</h2>
+                        <p class="section-subtitle">Lentil dishes and traditional breads</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Dal Tadka</h3>
+                            <p>Lentils with tempered spices</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Dal Fry</h3>
+                            <p>Fried lentil preparation</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Butter Khichdi</h3>
+                            <p>Rice and lentils cooked with butter</p>
+                        </div>
+                        <div class="item-price">₹100/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Dal Makhani</h3>
+                            <p>Creamy black lentils</p>
+                        </div>
+                        <div class="item-price">₹130/-</div>
+                    </div>
+                </div>
+                
+                <div class="menu-items" style="margin-top: 30px;">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tawa Roti Plain</h3>
+                            <p>Plain Indian bread</p>
+                        </div>
+                        <div class="item-price">₹7/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tawa Roti Butter</h3>
+                            <p>Indian bread with butter</p>
+                        </div>
+                        <div class="item-price">₹10/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tandoori Roti Plain</h3>
+                            <p>Bread cooked in tandoor</p>
+                        </div>
+                        <div class="item-price">₹15/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Tandoori Roti Butter</h3>
+                            <p>Tandoori bread with butter</p>
+                        </div>
+                        <div class="item-price">₹20/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Lachha Paratha</h3>
+                            <p>Layered Indian bread</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Naan Plain</h3>
+                            <p>Leavened Indian bread</p>
+                        </div>
+                        <div class="item-price">₹30/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Naan Butter</h3>
+                            <p>Butter naan bread</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chilly Garlic Naan</h3>
+                            <p>Naan with chilly and garlic</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
                     </div>
                 </div>
             </div>
@@ -1236,6 +2270,196 @@
             </div>
         </section>
 
+        <!-- ==================== BEVERAGES ==================== -->
+        <section id="beverages" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Beverages</h2>
+                        <p class="section-subtitle">Hot and cold drinks</p>
+                    </div>
+                </div>
+                
+                <div class="special-offer">
+                    <h4>Mocktails & Cold Beverages</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mint Mojito</h3>
+                            <p>Refreshing mint lemonade</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Cold Coffee</h3>
+                            <p>Iced coffee with cream</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Shakes</h3>
+                            <p>Milk shakes in various flavors</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Aerated Water</h3>
+                            <p>Soft drinks and sodas</p>
+                        </div>
+                        <div class="item-price">MRP</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Mineral Water</h3>
+                            <p>Packaged drinking water</p>
+                        </div>
+                        <div class="item-price">MRP</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fresh Lime Soda</h3>
+                            <p>Soda with fresh lime juice</p>
+                        </div>
+                        <div class="item-price">₹40/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fruit Punch</h3>
+                            <p>Mixed fruit beverage</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Fruit Juice</h3>
+                            <p>Fresh fruit juices</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                </div>
+                
+                <div class="special-offer" style="margin-top: 30px;">
+                    <h4>Hot Beverages</h4>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Coffee</h3>
+                            <p>Hot brewed coffee</p>
+                        </div>
+                        <div class="item-price">₹20/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Masala Tea</h3>
+                            <p>Spiced Indian tea</p>
+                        </div>
+                        <div class="item-price">₹15/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Ginger Tea</h3>
+                            <p>Tea with fresh ginger</p>
+                        </div>
+                        <div class="item-price">₹10/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hot Milk</h3>
+                            <p>Plain hot milk</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Bourn Vita Milk</h3>
+                            <p>Milk with Bourn Vita</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Hot Chocolate</h3>
+                            <p>Rich hot chocolate drink</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== DESSERTS ==================== -->
+        <section id="desserts" class="menu-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Desserts</h2>
+                        <p class="section-subtitle">Sweet treats to end your meal</p>
+                    </div>
+                </div>
+                
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Gulab Jamun</h3>
+                            <p>Sweet milk balls in sugar syrup</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Ice Cream</h3>
+                            <p>Various flavors available</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Halwa (Moong/Gajar)</h3>
+                            <p>Sweet pudding made from lentils or carrots</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Vanilla Ice Cream</h3>
+                            <p>Classic vanilla flavor</p>
+                        </div>
+                        <div class="item-price">₹50/-</div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <h3>Chocolate Ice Cream</h3>
+                            <p>Rich chocolate flavor</p>
+                        </div>
+                        <div class="item-price">₹60/-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- ==================== ORDER CTA ==================== -->
         <section class="order-cta">
             <div class="container">
@@ -1263,7 +2487,7 @@
                     <h3>Jaiswal Family Restaurant</h3>
                     <p>Top Restaurant in Neelbad, Bhopal</p>
                     <div class="footer-seo-text">
-                        Explore our complete menu featuring the best food in Neelbad, Bhopal. From traditional breakfast to delicious Chinese cuisine, we serve authentic vegetarian dishes at our restaurant in Jagannath Puri, Neelbad.
+                        Explore our complete menu featuring the best vegetarian and non-vegetarian food in Neelbad, Bhopal. From traditional Indian cuisine to Chinese, Italian and fast food, we serve authentic dishes at our restaurant in Jagannath Puri, Neelbad.
                     </div>
                 </div>
                 
@@ -1353,7 +2577,7 @@
         });
         
         // Console log for debugging
-        console.log('Jaiswal Family Restaurant Menu Page Loaded');
+        console.log('Jaiswal Family Restaurant Complete Menu Page Loaded');
     </script>
 </body>
 </html>
