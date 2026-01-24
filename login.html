@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Registration - MyPlatform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            min-height: 700px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(rgba(79, 70, 229, 0.9), rgba(124, 58, 237, 0.9)), 
+                        url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 50px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel {
+            flex: 1.2;
+            background: white;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: #10b981;
+        }
+
+        .welcome-text h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .welcome-text p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .features {
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .feature-text h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .feature-text p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            font-size: 2.5rem;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #4f46e5;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #4f46e5;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: ' *';
+            color: #ef4444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .form-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .message.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .message i {
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(to right, #4338ca, #6d28d9);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+        }
+
+        .otp-container {
+            display: none;
+            text-align: center;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+
+        .otp-input:focus {
+            border-color: #4f46e5;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .resend-otp {
+            margin-top: 20px;
+            color: #4f46e5;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .resend-otp:hover {
+            text-decoration: underline;
+        }
+
+        .otp-timer {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .terms {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .terms a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Profile Creation Step */
+        .profile-step {
+            display: none;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border: 3px solid white;
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .step.active .step-number {
+            background: #4f46e5;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        .step.completed .step-number::after {
+            content: '✓';
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .left-panel {
+                padding: 30px;
+            }
+            
+            .right-panel {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .left-panel {
+                display: none;
+            }
+            
+            .right-panel {
+                padding: 20px;
+            }
+            
+            .form-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="logo">
+                <i class="fas fa-hard-hat"></i>
+                <span>BuildConnect</span>
+            </div>
+            
+            <div class="welcome-text">
+                <h1>Join Our Platform</h1>
+                <p>Connect with thousands of customers looking for construction professionals, architects, and material suppliers. Grow your business with our powerful platform.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Get More Projects</h3>
+                        <p>Access leads from customers in your service area</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Verified Status</h3>
+                        <p>Build trust with verified business profiles</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Business Growth</h3>
+                        <p>Tools to help you manage and grow your business</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="form-container">
+                <!-- Messages -->
+                <div id="message" class="message"></div>
+
+                <!-- Step 1: Authentication -->
+                <div id="authStep" class="auth-step">
+                    <div class="form-header">
+                        <h2>Create Provider Account</h2>
+                        <p>Sign up to start your business journey with us</p>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn active" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+                        <button class="tab-btn" id="loginTab" onclick="switchTab('login')">Login</button>
+                    </div>
+
+                    <!-- Sign Up Form -->
+                    <div id="signupForm">
+                        <div class="form-group">
+                            <label class="required" for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="Enter your full name">
+                            <div class="form-error" id="fullNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email">
+                            <div class="form-error" id="emailError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="Enter your phone number">
+                            <div class="form-error" id="phoneError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="signupPassword">Password</label>
+                            <div class="password-container">
+                                <input type="password" id="signupPassword" placeholder="Create a strong password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('signupPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-hint">Minimum 8 characters with uppercase, lowercase, and number</div>
+                            <div class="form-error" id="signupPasswordError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="confirmPassword">Confirm Password</label>
+                            <div class="password-container">
+                                <input type="password" id="confirmPassword" placeholder="Confirm your password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-error" id="confirmPasswordError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userType">Registering as</label>
+                            <select id="userType">
+                                <option value="contractor">Contractor</option>
+                                <option value="architect">Architect</option>
+                                <option value="supplier">Material Supplier</option>
+                                <option value="vendor">Vendor</option>
+                                <option value="other">Other Professional</option>
+                            </select>
+                        </div>
+
+                        <div class="terms">
+                            By signing up, you agree to our <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                        </div>
+
+                        <button class="btn btn-primary" id="signupBtn" onclick="signUp()">
+                            <div class="loader"></div>
+                            <span>Create Account</span>
+                        </button>
+
+                        <div class="login-link">
+                            Already have an account? <a href="#" onclick="switchTab('login')">Log In</a>
+                        </div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="loginForm" style="display: none;">
+                        <div class="form-group">
+                            <label class="required" for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" placeholder="Enter your email">
+                            <div class="form-error" id="loginEmailError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="loginPassword">Password</label>
+                            <div class="password-container">
+                                <input type="password" id="loginPassword" placeholder="Enter your password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-error" id="loginPasswordError"></div>
+                        </div>
+
+                        <div style="text-align: right; margin-bottom: 20px;">
+                            <a href="#" onclick="forgotPassword()" style="color: #4f46e5; text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
+                        </div>
+
+                        <button class="btn btn-primary" id="loginBtn" onclick="signIn()">
+                            <div class="loader"></div>
+                            <span>Sign In</span>
+                        </button>
+
+                        <div class="divider">
+                            <span>Or continue with</span>
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="signInWithGoogle()">
+                            <i class="fab fa-google"></i>
+                            <span>Sign in with Google</span>
+                        </button>
+
+                        <div class="login-link">
+                            Don't have an account? <a href="#" onclick="switchTab('signup')">Sign Up</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="otpStep" class="otp-container">
+                    <div class="form-header">
+                        <h2>Verify Your Phone</h2>
+                        <p>We've sent a 6-digit code to <span id="phoneNumberDisplay"></span></p>
+                    </div>
+
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp2')">
+                        <input type="text" class="otp-input" id="otp2" maxlength="1" oninput="moveToNext(this, 'otp3')">
+                        <input type="text" class="otp-input" id="otp3" maxlength="1" oninput="moveToNext(this, 'otp4')">
+                        <input type="text" class="otp-input" id="otp4" maxlength="1" oninput="moveToNext(this, 'otp5')">
+                        <input type="text" class="otp-input" id="otp5" maxlength="1" oninput="moveToNext(this, 'otp6')">
+                        <input type="text" class="otp-input" id="otp6" maxlength="1" oninput="moveToNext(this, null)">
+                    </div>
+
+                    <div id="otpError" class="form-error" style="text-align: center;"></div>
+
+                    <div class="resend-otp" id="resendOtp">
+                        <span>Didn't receive the code? </span>
+                        <a href="#" onclick="resendOTP()">Resend OTP</a>
+                        <span id="otpTimer" class="otp-timer"></span>
+                    </div>
+
+                    <button class="btn btn-primary" id="verifyBtn" onclick="verifyOTP()">
+                        <div class="loader"></div>
+                        <span>Verify & Continue</span>
+                    </button>
+
+                    <button class="btn btn-secondary" onclick="goBackToAuth()" style="margin-top: 15px;">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Sign Up</span>
+                    </button>
+                </div>
+
+                <!-- Step 3: Profile Creation -->
+                <div id="profileStep" class="profile-step">
+                    <div class="form-header">
+                        <h2>Complete Your Profile</h2>
+                        <p>Let's set up your basic profile information</p>
+                    </div>
+
+                    <div class="step-indicator">
+                        <div class="step completed">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Account</div>
+                        </div>
+                        <div class="step active">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Profile</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Business</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required" for="profileFullName">Full Name</label>
+                        <input type="text" id="profileFullName" placeholder="Enter your full name">
+                        <div class="form-error" id="profileFullNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required" for="profilePhone">Phone Number</label>
+                        <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+                        <div class="form-error" id="profilePhoneError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required" for="profileCity">City</label>
+                        <select id="profileCity">
+                            <option value="">Select your city</option>
+                            <!-- Cities will be populated by JavaScript -->
+                        </select>
+                        <div class="form-error" id="profileCityError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileAddress">Address</label>
+                        <input type="text" id="profileAddress" placeholder="Enter your address">
+                    </div>
+
+                    <div class="terms">
+                        Clicking 'Continue' will redirect you to business registration
+                    </div>
+
+                    <button class="btn btn-primary" id="continueBtn" onclick="completeProfile()">
+                        <div class="loader"></div>
+                        <span>Continue to Business Registration</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const supabaseUrl = 'https://xfeubykrdtzjhblvzote.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmZXVieWtyZHR6amhibHZ6b3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxMTUzNDQsImV4cCI6MjA2ODY5MTM0NH0.z8L32ROB_TgcQMRvxDVUd1WOMe6hzF3F71tgZJKaovQ';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Application state
+        const state = {
+            currentStep: 'auth',
+            user: null,
+            session: null,
+            loading: false,
+            otpTimer: 60,
+            otpInterval: null,
+            cities: [],
+            userId: null
+        };
+
+        // DOM Elements
+        const messageEl = document.getElementById('message');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check for existing session
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session?.user) {
+                state.user = session.user;
+                state.session = session;
+                showProfileStep();
+            }
+            
+            // Load cities for dropdown
+            await loadCities();
+            
+            // Set up OTP timer
+            startOTPTimer();
+        });
+
+        // Load cities from database
+        async function loadCities() {
+            try {
+                const { data, error } = await supabase
+                    .from('cities')
+                    .select('id, name')
+                    .order('name');
+
+                if (error) throw error;
+
+                state.cities = data;
+                const select = document.getElementById('profileCity');
+                
+                data.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading cities:', error);
+            }
+        }
+
+        // Switch between signup and login tabs
+        function switchTab(tab) {
+            const signupTab = document.getElementById('signupTab');
+            const loginTab = document.getElementById('loginTab');
+            const signupForm = document.getElementById('signupForm');
+            const loginForm = document.getElementById('loginForm');
+            
+            if (tab === 'signup') {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            } else {
+                signupTab.classList.remove('active');
+                loginTab.classList.add('active');
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+            }
+            
+            clearErrors();
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggleBtn = input.nextElementSibling;
+            const icon = toggleBtn.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Clear all error messages
+        function clearErrors() {
+            document.querySelectorAll('.form-error').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+        }
+
+        // Show error message for a specific field
+        function showError(fieldId, message) {
+            const errorEl = document.getElementById(fieldId);
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Show message banner
+        function showMessage(type, text) {
+            messageEl.className = `message ${type}`;
+            messageEl.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-circle' : 
+                                  'info-circle'}"></i>
+                <span>${text}</span>
+            `;
+            messageEl.style.display = 'flex';
+            
+            // Auto hide messages after 5 seconds
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Validate password strength
+        function isValidPassword(password) {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            
+            return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers;
+        }
+
+        // Validate phone number
+        function isValidPhone(phone) {
+            const phoneRegex = /^[\+]?[1-9][\d]{9,14}$/;
+            return phoneRegex.test(phone.replace(/\D/g, ''));
+        }
+
+        // Sign up function
+        async function signUp() {
+            // Clear previous errors
+            clearErrors();
+            
+            // Get form values
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const userType = document.getElementById('userType').value;
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!fullName) {
+                showError('fullNameError', 'Full name is required');
+                isValid = false;
+            }
+            
+            if (!email) {
+                showError('emailError', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            if (!phone) {
+                showError('phoneError', 'Phone number is required');
+                isValid = false;
+            } else if (!isValidPhone(phone)) {
+                showError('phoneError', 'Please enter a valid phone number');
+                isValid = false;
+            }
+            
+            if (!password) {
+                showError('signupPasswordError', 'Password is required');
+                isValid = false;
+            } else if (!isValidPassword(password)) {
+                showError('signupPasswordError', 'Password must be at least 8 characters with uppercase, lowercase, and number');
+                isValid = false;
+            }
+            
+            if (!confirmPassword) {
+                showError('confirmPasswordError', 'Please confirm your password');
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading state
+            const signupBtn = document.getElementById('signupBtn');
+            const loader = signupBtn.querySelector('.loader');
+            signupBtn.disabled = true;
+            loader.style.display = 'block';
+            signupBtn.querySelector('span').textContent = 'Creating Account...';
+            
+            try {
+                // Check if email already exists
+                const { data: existingUser, error: checkError } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', email)
+                    .single();
+                
+                if (existingUser) {
+                    throw new Error('Email already registered. Please use a different email or login.');
+                }
+                
+                // Sign up with Supabase Auth
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            phone: phone,
+                            user_type: 'provider'
+                        }
+                    }
+                });
+                
+                if (error) throw error;
+                
+                // Store user data in state
+                state.user = data.user;
+                state.session = data.session;
+                
+                // Create profile in profiles table
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: data.user.id,
+                        full_name: fullName,
+                        mobile_number: phone,
+                        user_type: 'provider',
+                        is_active: true,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    });
+                
+                if (profileError) throw profileError;
+                
+                // Show success message
+                showMessage('success', 'Account created successfully! Please verify your phone.');
+                
+                // Move to OTP verification step
+                showOTPStep(phone);
+                
+            } catch (error) {
+                console.error('Sign up error:', error);
+                showMessage('error', error.message || 'Failed to create account. Please try again.');
+            } finally {
+                // Reset loading state
+                signupBtn.disabled = false;
+                loader.style.display = 'none';
+                signupBtn.querySelector('span').textContent = 'Create Account';
+            }
+        }
+
+        // Sign in function
+        async function signIn() {
+            // Clear previous errors
+            clearErrors();
+            
+            // Get form values
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!email) {
+                showError('loginEmailError', 'Email is required');
+                isValid = false;
+            }
+            
+            if (!password) {
+                showError('loginPasswordError', 'Password is required');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading state
+            const loginBtn = document.getElementById('loginBtn');
+            const loader = loginBtn.querySelector('.loader');
+            loginBtn.disabled = true;
+            loader.style.display = 'block';
+            loginBtn.querySelector('span').textContent = 'Signing In...';
+            
+            try {
+                // Sign in with Supabase Auth
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                // Store user data in state
+                state.user = data.user;
+                state.session = data.session;
+                
+                // Check if user has completed profile
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+                
+                if (profileError) throw profileError;
+                
+                if (profile.full_name && profile.mobile_number && profile.city_id) {
+                    // User has completed profile, redirect to business registration
+                    showMessage('success', 'Login successful!');
+                    setTimeout(() => {
+                        window.location.href = 'business-registration.html';
+                    }, 1500);
+                } else {
+                    // User needs to complete profile
+                    showProfileStep();
+                }
+                
+            } catch (error) {
+                console.error('Sign in error:', error);
+                showMessage('error', error.message || 'Invalid email or password. Please try again.');
+            } finally {
+                // Reset loading state
+                loginBtn.disabled = false;
+                loader.style.display = 'none';
+                loginBtn.querySelector('span').textContent = 'Sign In';
+            }
+        }
+
+        // Sign in with Google
+        async function signInWithGoogle() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.href
+                    }
+                });
+                
+                if (error) throw error;
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                showMessage('error', 'Failed to sign in with Google. Please try again.');
+            }
+        }
+
+        // Forgot password
+        async function forgotPassword() {
+            const email = prompt('Please enter your email address to reset password:');
+            
+            if (email && isValidEmail(email)) {
+                try {
+                    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                        redirectTo: window.location.href
+                    });
+                    
+                    if (error) throw error;
+                    
+                    showMessage('info', 'Password reset instructions have been sent to your email.');
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    showMessage('error', 'Failed to send reset email. Please try again.');
+                }
+            } else if (email) {
+                showMessage('error', 'Please enter a valid email address.');
+            }
+        }
+
+        // Show OTP verification step
+        function showOTPStep(phoneNumber) {
+            // Update UI
+            document.getElementById('authStep').style.display = 'none';
+            document.getElementById('otpStep').style.display = 'block';
+            document.getElementById('phoneNumberDisplay').textContent = phoneNumber;
+            
+            // Reset OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('otp1').focus();
+            
+            // Start OTP timer
+            startOTPTimer();
+            
+            // Store phone number in state
+            state.phoneNumber = phoneNumber;
+            
+            // In a real application, you would send an OTP via SMS here
+            // For demo purposes, we'll show a mock OTP
+            showMessage('info', 'For demo: Use "123456" as OTP');
+        }
+
+        // Start OTP timer
+        function startOTPTimer() {
+            clearInterval(state.otpInterval);
+            state.otpTimer = 60;
+            
+            const timerEl = document.getElementById('otpTimer');
+            const resendLink = document.querySelector('#resendOtp a');
+            
+            resendLink.style.pointerEvents = 'none';
+            resendLink.style.opacity = '0.5';
+            
+            state.otpInterval = setInterval(() => {
+                state.otpTimer--;
+                timerEl.textContent = ` (${state.otpTimer}s)`;
+                
+                if (state.otpTimer <= 0) {
+                    clearInterval(state.otpInterval);
+                    timerEl.textContent = '';
+                    resendLink.style.pointerEvents = 'auto';
+                    resendLink.style.opacity = '1';
+                }
+            }, 1000);
+        }
+
+        // Move to next OTP input
+        function moveToNext(current, nextId) {
+            current.value = current.value.replace(/[^0-9]/g, '');
+            
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        // Verify OTP
+        async function verifyOTP() {
+            // Get OTP values
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let otp = '';
+            otpInputs.forEach(input => {
+                otp += input.value;
+            });
+            
+            // Validate OTP
+            if (otp.length !== 6) {
+                showError('otpError', 'Please enter all 6 digits');
+                return;
+            }
+            
+            // For demo: Accept any 6-digit OTP starting with 1
+            if (otp !== '123456') {
+                showError('otpError', 'Invalid OTP. Please try again.');
+                return;
+            }
+            
+            // In a real application, you would verify the OTP with your backend
+            // For demo, we'll proceed with the mock verification
+            
+            // Show loading state
+            const verifyBtn = document.getElementById('verifyBtn');
+            const loader = verifyBtn.querySelector('.loader');
+            verifyBtn.disabled = true;
+            loader.style.display = 'block';
+            verifyBtn.querySelector('span').textContent = 'Verifying...';
+            
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // OTP verified successfully
+                showProfileStep();
+                
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                showError('otpError', 'Failed to verify OTP. Please try again.');
+            } finally {
+                // Reset loading state
+                verifyBtn.disabled = false;
+                loader.style.display = 'none';
+                verifyBtn.querySelector('span').textContent = 'Verify & Continue';
+            }
+        }
+
+        // Resend OTP
+        function resendOTP() {
+            // In a real application, you would resend the OTP via SMS
+            // For demo, we'll just reset the timer
+            startOTPTimer();
+            showMessage('info', 'New OTP sent to your phone number.');
+        }
+
+        // Go back to authentication step
+        function goBackToAuth() {
+            document.getElementById('otpStep').style.display = 'none';
+            document.getElementById('authStep').style.display = 'block';
+            clearInterval(state.otpInterval);
+        }
+
+        // Show profile creation step
+        function showProfileStep() {
+            document.getElementById('authStep').style.display = 'none';
+            document.getElementById('otpStep').style.display = 'none';
+            document.getElementById('profileStep').style.display = 'block';
+            
+            // Pre-fill data if available
+            if (state.user?.user_metadata?.full_name) {
+                document.getElementById('profileFullName').value = state.user.user_metadata.full_name;
+            }
+            if (state.user?.user_metadata?.phone) {
+                document.getElementById('profilePhone').value = state.user.user_metadata.phone;
+            }
+        }
+
+        // Complete profile and redirect to business registration
+        async function completeProfile() {
+            // Clear previous errors
+            clearErrors();
+            
+            // Get form values
+            const fullName = document.getElementById('profileFullName').value.trim();
+            const phone = document.getElementById('profilePhone').value.trim();
+            const cityId = document.getElementById('profileCity').value;
+            const address = document.getElementById('profileAddress').value.trim();
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!fullName) {
+                showError('profileFullNameError', 'Full name is required');
+                isValid = false;
+            }
+            
+            if (!phone) {
+                showError('profilePhoneError', 'Phone number is required');
+                isValid = false;
+            } else if (!isValidPhone(phone)) {
+                showError('profilePhoneError', 'Please enter a valid phone number');
+                isValid = false;
+            }
+            
+            if (!cityId) {
+                showError('profileCityError', 'Please select your city');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading state
+            const continueBtn = document.getElementById('continueBtn');
+            const loader = continueBtn.querySelector('.loader');
+            continueBtn.disabled = true;
+            loader.style.display = 'block';
+            continueBtn.querySelector('span').textContent = 'Saving...';
+            
+            try {
+                // Update profile in database
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        full_name: fullName,
+                        mobile_number: phone,
+                        city_id: cityId,
+                        address: address,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', state.user.id);
+                
+                if (error) throw error;
+                
+                // Show success message and redirect
+                showMessage('success', 'Profile completed successfully! Redirecting to business registration...');
+                
+                // Redirect to business registration page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'business-registration.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Profile update error:', error);
+                showMessage('error', 'Failed to save profile. Please try again.');
+            } finally {
+                // Reset loading state
+                continueBtn.disabled = false;
+                loader.style.display = 'none';
+                continueBtn.querySelector('span').textContent = 'Continue to Business Registration';
+            }
+        }
+
+        // Show terms of service
+        function showTerms() {
+            alert('Terms of Service will be displayed here. In a production app, this would link to your terms page.');
+        }
+
+        // Show privacy policy
+        function showPrivacy() {
+            alert('Privacy Policy will be displayed here. In a production app, this would link to your privacy policy page.');
+        }
+    </script>
+</body>
+</html>
