@@ -695,606 +695,680 @@
     </div>
 
     <script>
-        // Supabase Configuration
-        const supabaseUrl = 'https://xfeubykrdtzjhblvzote.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmZXVieWtyZHR6amhibHZ6b3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxMTUzNDQsImV4cCI6MjA2ODY5MTM0NH0.z8L32ROB_TgcQMRvxDVUd1WOMe6hzF3F71tgZJKaovQ';
-        
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+    // Supabase Configuration
+    const supabaseUrl = 'https://xfeubykrdtzjhblvzote.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmZXVieWtyZHR6amhibHZ6b3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxMTUzNDQsImV4cCI6MjA2ODY5MTM0NH0.z8L32ROB_TgcQMRvxDVUd1WOMe6hzF3F71tgZJKaovQ';
+    
+    // Initialize Supabase client
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        // Application state
-        const state = {
-            currentStep: 1,
-            totalSteps: 4,
-            cities: [],
-            uploadedFiles: {
-                govId: null,
-                license: null,
-                insurance: null,
-                certificate: null
-            },
-            businessTypes: [],
-            isLoading: false,
-            userId: null // This should be set based on your authentication
-        };
+    // Application state
+    const state = {
+        currentStep: 1,
+        totalSteps: 4,
+        cities: [],
+        uploadedFiles: {
+            govId: null,
+            license: null,
+            insurance: null,
+            certificate: null
+        },
+        businessTypes: [],
+        isLoading: false,
+        userId: null // This should be set based on your authentication
+    };
 
-        // DOM Elements
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const progressSteps = document.querySelectorAll('.progress-step');
-        const formSteps = document.querySelectorAll('.form-step');
-        const messageEl = document.getElementById('message');
+    // DOM Elements
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    const formSteps = document.querySelectorAll('.form-step');
+    const messageEl = document.getElementById('message');
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            // Load business types from database
-            loadBusinessTypes();
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Initialize file upload handlers
-            setupFileUploads();
-            
-            // For demo purposes, set a mock user ID
-            // In production, you should get this from your authentication system
-            state.userId = '00000000-0000-0000-0000-000000000000'; // Mock UUID
-        });
-
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
         // Load business types from database
-        async function loadBusinessTypes() {
-            try {
-                const { data, error } = await supabase
-                    .from('business_types')
-                    .select('id, name')
-                    .order('name');
+        loadBusinessTypes();
+        
+        // Set up event listeners
+        setupEventListeners();
+        
+        // Initialize file upload handlers
+        setupFileUploads();
+        
+        // Get current user from Supabase auth
+        getCurrentUser();
+    });
 
-                if (error) throw error;
-
-                state.businessTypes = data;
-                const select = document.getElementById('businessType');
-                
-                data.forEach(type => {
-                    const option = document.createElement('option');
-                    option.value = type.id;
-                    option.textContent = type.name;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading business types:', error);
-                showMessage('error', 'Failed to load business types. Please refresh the page.');
-            }
-        }
-
-        // Set up all event listeners
-        function setupEventListeners() {
-            // Navigation buttons
-            prevBtn.addEventListener('click', goToPrevStep);
-            nextBtn.addEventListener('click', goToNextStep);
-            submitBtn.addEventListener('click', submitForm);
+    // Get current authenticated user
+    async function getCurrentUser() {
+        try {
+            const { data: { user }, error } = await supabase.auth.getUser();
             
-            // City management
-            document.getElementById('addCityBtn').addEventListener('click', addCity);
-            document.getElementById('cityInput').addEventListener('keypress', (e) => {
+            if (error) throw error;
+            
+            if (user) {
+                state.userId = user.id;
+                console.log('User ID:', state.userId);
+            } else {
+                // If no user is logged in, redirect to login page
+                showMessage('error', 'Please login first to register your business.');
+                setTimeout(() => {
+                    window.location.href = 'provider-registration.html';
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error getting user:', error);
+            showMessage('error', 'Please login first.');
+            setTimeout(() => {
+                window.location.href = 'provider-registration.html';
+            }, 2000);
+        }
+    }
+
+    // Load business types from database
+    async function loadBusinessTypes() {
+        try {
+            const { data, error } = await supabase
+                .from('business_types')
+                .select('id, name')
+                .order('name');
+
+            if (error) throw error;
+
+            state.businessTypes = data;
+            const select = document.getElementById('businessType');
+            
+            data.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.id;
+                option.textContent = type.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading business types:', error);
+            showMessage('error', 'Failed to load business types. Please refresh the page.');
+        }
+    }
+
+    // Set up all event listeners
+    function setupEventListeners() {
+        // Navigation buttons
+        prevBtn.addEventListener('click', goToPrevStep);
+        nextBtn.addEventListener('click', goToNextStep);
+        submitBtn.addEventListener('click', submitForm);
+        
+        // City management
+        const addCityBtn = document.getElementById('addCityBtn');
+        if (addCityBtn) {
+            addCityBtn.addEventListener('click', addCity);
+        }
+        
+        const cityInput = document.getElementById('cityInput');
+        if (cityInput) {
+            cityInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     addCity();
                 }
             });
-            
-            // Form validation on input
-            document.querySelectorAll('input, select, textarea').forEach(element => {
-                element.addEventListener('blur', () => validateField(element));
-                element.addEventListener('input', () => clearError(element.id));
-            });
         }
+        
+        // Form validation on input
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('blur', () => validateField(element));
+            element.addEventListener('input', () => clearError(element.id));
+        });
+    }
 
-        // Set up file upload handlers
-        function setupFileUploads() {
-            // Government ID
-            document.getElementById('govIdFile').addEventListener('change', (e) => {
+    // Set up file upload handlers
+    function setupFileUploads() {
+        // Government ID
+        const govIdFile = document.getElementById('govIdFile');
+        if (govIdFile) {
+            govIdFile.addEventListener('change', (e) => {
                 handleFileUpload(e, 'govId', 'govIdFileName');
             });
-            
-            // Business License
-            document.getElementById('licenseFile').addEventListener('change', (e) => {
+        }
+        
+        // Business License
+        const licenseFile = document.getElementById('licenseFile');
+        if (licenseFile) {
+            licenseFile.addEventListener('change', (e) => {
                 handleFileUpload(e, 'license', 'licenseFileName');
             });
-            
-            // Insurance Certificate
-            document.getElementById('insuranceFile').addEventListener('change', (e) => {
+        }
+        
+        // Insurance Certificate
+        const insuranceFile = document.getElementById('insuranceFile');
+        if (insuranceFile) {
+            insuranceFile.addEventListener('change', (e) => {
                 handleFileUpload(e, 'insurance', 'insuranceFileName');
             });
-            
-            // Business Certificate
-            document.getElementById('certificateFile').addEventListener('change', (e) => {
+        }
+        
+        // Business Certificate
+        const certificateFile = document.getElementById('certificateFile');
+        if (certificateFile) {
+            certificateFile.addEventListener('change', (e) => {
                 handleFileUpload(e, 'certificate', 'certificateFileName');
             });
         }
+    }
 
-        // Handle file upload
-        function handleFileUpload(event, fileType, fileNameElementId) {
-            const file = event.target.files[0];
-            if (file) {
-                // Validate file type
-                const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-                if (!validTypes.includes(file.type)) {
-                    showMessage('error', 'Please upload only PDF, JPG, or PNG files.');
-                    event.target.value = '';
-                    return;
-                }
-                
-                // Validate file size (max 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    showMessage('error', 'File size must be less than 5MB.');
-                    event.target.value = '';
-                    return;
-                }
-                
-                state.uploadedFiles[fileType] = file;
-                document.getElementById(fileNameElementId).textContent = file.name;
-                clearError(fileType + 'Error');
+    // Handle file upload
+    function handleFileUpload(event, fileType, fileNameElementId) {
+        const file = event.target.files[0];
+        if (file) {
+            // Validate file type
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('error', 'Please upload only PDF, JPG, or PNG files.');
+                event.target.value = '';
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('error', 'File size must be less than 5MB.');
+                event.target.value = '';
+                return;
+            }
+            
+            state.uploadedFiles[fileType] = file;
+            document.getElementById(fileNameElementId).textContent = file.name;
+            clearError(fileType + 'Error');
+        }
+    }
+
+    // Add city to the list
+    function addCity() {
+        const cityInput = document.getElementById('cityInput');
+        const city = cityInput.value.trim();
+        
+        if (city) {
+            if (!state.cities.includes(city)) {
+                state.cities.push(city);
+                renderCities();
+                cityInput.value = '';
+                clearError('citiesError');
+            } else {
+                showError('citiesError', 'City already added.');
             }
         }
+    }
 
-        // Add city to the list
-        function addCity() {
-            const cityInput = document.getElementById('cityInput');
-            const city = cityInput.value.trim();
-            
-            if (city) {
-                if (!state.cities.includes(city)) {
-                    state.cities.push(city);
-                    renderCities();
-                    cityInput.value = '';
-                    clearError('citiesError');
-                } else {
-                    showError('citiesError', 'City already added.');
-                }
-            }
+    // Remove city from the list
+    function removeCity(index) {
+        state.cities.splice(index, 1);
+        renderCities();
+    }
+
+    // Render cities as tags
+    function renderCities() {
+        const container = document.getElementById('citiesContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        state.cities.forEach((city, index) => {
+            const tag = document.createElement('div');
+            tag.className = 'city-tag';
+            tag.innerHTML = `
+                ${city}
+                <button type="button" onclick="removeCity(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(tag);
+        });
+    }
+
+    // Navigation functions
+    function goToPrevStep() {
+        if (state.currentStep > 1) {
+            state.currentStep--;
+            updateFormDisplay();
         }
+    }
 
-        // Remove city from the list
-        function removeCity(index) {
-            state.cities.splice(index, 1);
-            renderCities();
-        }
-
-        // Render cities as tags
-        function renderCities() {
-            const container = document.getElementById('citiesContainer');
-            container.innerHTML = '';
-            
-            state.cities.forEach((city, index) => {
-                const tag = document.createElement('div');
-                tag.className = 'city-tag';
-                tag.innerHTML = `
-                    ${city}
-                    <button type="button" onclick="removeCity(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                container.appendChild(tag);
-            });
-        }
-
-        // Navigation functions
-        function goToPrevStep() {
-            if (state.currentStep > 1) {
-                state.currentStep--;
+    function goToNextStep() {
+        if (validateCurrentStep()) {
+            if (state.currentStep < state.totalSteps) {
+                state.currentStep++;
                 updateFormDisplay();
             }
         }
+    }
 
-        function goToNextStep() {
-            if (validateCurrentStep()) {
-                if (state.currentStep < state.totalSteps) {
-                    state.currentStep++;
-                    updateFormDisplay();
-                }
+    // Update form display based on current step
+    function updateFormDisplay() {
+        // Update progress steps
+        progressSteps.forEach((step, index) => {
+            const stepNumber = index + 1;
+            if (stepNumber < state.currentStep) {
+                step.classList.remove('active');
+                step.classList.add('completed');
+            } else if (stepNumber === state.currentStep) {
+                step.classList.add('active');
+                step.classList.remove('completed');
+            } else {
+                step.classList.remove('active', 'completed');
             }
-        }
-
-        // Update form display based on current step
-        function updateFormDisplay() {
-            // Update progress steps
-            progressSteps.forEach((step, index) => {
-                const stepNumber = index + 1;
-                if (stepNumber < state.currentStep) {
-                    step.classList.remove('active');
-                    step.classList.add('completed');
-                } else if (stepNumber === state.currentStep) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else {
-                    step.classList.remove('active', 'completed');
-                }
-            });
-            
-            // Update form steps
-            formSteps.forEach(step => {
-                const stepNumber = parseInt(step.dataset.step);
-                if (stepNumber === state.currentStep) {
-                    step.classList.add('active');
-                } else {
-                    step.classList.remove('active');
-                }
-            });
-            
-            // Update buttons
-            prevBtn.disabled = state.currentStep === 1;
-            nextBtn.style.display = state.currentStep < state.totalSteps ? 'flex' : 'none';
-            submitBtn.style.display = state.currentStep === state.totalSteps ? 'flex' : 'none';
-        }
-
-        // Validate current step
-        function validateCurrentStep() {
-            let isValid = true;
-            
-            switch(state.currentStep) {
-                case 1:
-                    isValid = validateStep1();
-                    break;
-                case 2:
-                    isValid = validateStep2();
-                    break;
-                case 3:
-                    isValid = validateStep3();
-                    break;
-                case 4:
-                    isValid = validateStep4();
-                    break;
+        });
+        
+        // Update form steps
+        formSteps.forEach(step => {
+            const stepNumber = parseInt(step.dataset.step);
+            if (stepNumber === state.currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
             }
-            
-            return isValid;
-        }
+        });
+        
+        // Update buttons
+        prevBtn.disabled = state.currentStep === 1;
+        nextBtn.style.display = state.currentStep < state.totalSteps ? 'flex' : 'none';
+        submitBtn.style.display = state.currentStep === state.totalSteps ? 'flex' : 'none';
+    }
 
-        // Validate step 1 fields
-        function validateStep1() {
-            const requiredFields = [
-                { id: 'businessName', name: 'Business Name' },
-                { id: 'registrationNumber', name: 'Registration Number' },
-                { id: 'businessType', name: 'Business Type' },
-                { id: 'yearsInBusiness', name: 'Years in Business' },
-                { id: 'businessAddress', name: 'Business Address' },
-                { id: 'aboutServices', name: 'About Services' }
-            ];
-            
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                const value = element.value.trim();
-                
-                if (!value) {
-                    showError(field.id + 'Error', `${field.name} is required`);
-                    isValid = false;
-                } else if (field.id === 'yearsInBusiness') {
-                    const years = parseInt(value);
-                    if (isNaN(years) || years < 0 || years > 100) {
-                        showError(field.id + 'Error', 'Please enter a valid number between 0 and 100');
-                        isValid = false;
-                    }
-                }
-            });
-            
-            // Validate cities
-            if (state.cities.length === 0) {
-                showError('citiesError', 'Please add at least one city');
-                isValid = false;
-            }
-            
-            return isValid;
+    // Validate current step
+    function validateCurrentStep() {
+        let isValid = true;
+        
+        switch(state.currentStep) {
+            case 1:
+                isValid = validateStep1();
+                break;
+            case 2:
+                isValid = validateStep2();
+                break;
+            case 3:
+                isValid = validateStep3();
+                break;
+            case 4:
+                isValid = validateStep4();
+                break;
         }
+        
+        return isValid;
+    }
 
-        // Validate step 2 fields
-        function validateStep2() {
-            const requiredFields = [
-                { id: 'contactName', name: 'Contact Person Name' },
-                { id: 'phoneNumber', name: 'Phone Number' },
-                { id: 'emailAddress', name: 'Email Address' },
-                { id: 'preferredCommunication', name: 'Preferred Communication' }
-            ];
+    // Validate step 1 fields
+    function validateStep1() {
+        const requiredFields = [
+            { id: 'businessName', name: 'Business Name', errorId: 'businessNameError' },
+            { id: 'registrationNumber', name: 'Registration Number', errorId: 'registrationNumberError' },
+            { id: 'businessType', name: 'Business Type', errorId: 'businessTypeError' },
+            { id: 'yearsInBusiness', name: 'Years in Business', errorId: 'yearsInBusinessError' },
+            { id: 'businessAddress', name: 'Business Address', errorId: 'businessAddressError' },
+            { id: 'aboutServices', name: 'About Services', errorId: 'aboutServicesError' }
+        ];
+        
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (!element) return;
             
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                const value = element.value.trim();
-                
-                if (!value) {
-                    showError(field.id + 'Error', `${field.name} is required`);
-                    isValid = false;
-                } else if (field.id === 'emailAddress') {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(value)) {
-                        showError(field.id + 'Error', 'Please enter a valid email address');
-                        isValid = false;
-                    }
-                } else if (field.id === 'phoneNumber') {
-                    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-                    if (!phoneRegex.test(value.replace(/\D/g, ''))) {
-                        showError(field.id + 'Error', 'Please enter a valid phone number');
-                        isValid = false;
-                    }
-                }
-            });
-            
-            return isValid;
-        }
-
-        // Validate step 3 fields
-        function validateStep3() {
-            let isValid = true;
-            
-            // Check required files
-            if (!state.uploadedFiles.govId) {
-                showError('govIdError', 'Government ID is required');
-                isValid = false;
-            }
-            
-            if (!state.uploadedFiles.license) {
-                showError('licenseError', 'Business License is required');
-                isValid = false;
-            }
-            
-            return isValid;
-        }
-
-        // Validate step 4 fields
-        function validateStep4() {
-            const requiredFields = [
-                { id: 'bankName', name: 'Bank Name' },
-                { id: 'accountNumber', name: 'Account Number' },
-                { id: 'accountType', name: 'Account Type' }
-            ];
-            
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                const value = element.value.trim();
-                
-                if (!value) {
-                    showError(field.id + 'Error', `${field.name} is required`);
-                    isValid = false;
-                }
-            });
-            
-            return isValid;
-        }
-
-        // Validate individual field
-        function validateField(element) {
             const value = element.value.trim();
-            const id = element.id;
             
-            if (element.hasAttribute('required') && !value) {
-                const fieldName = element.previousElementSibling.textContent.replace('*', '').trim();
-                showError(id + 'Error', `${fieldName} is required`);
-                return false;
+            if (!value) {
+                showError(field.errorId, `${field.name} is required`);
+                isValid = false;
+            } else if (field.id === 'yearsInBusiness') {
+                const years = parseInt(value);
+                if (isNaN(years) || years < 0 || years > 100) {
+                    showError(field.errorId, 'Please enter a valid number between 0 and 100');
+                    isValid = false;
+                }
             }
+        });
+        
+        // Validate cities
+        if (state.cities.length === 0) {
+            showError('citiesError', 'Please add at least one city');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+
+    // Validate step 2 fields
+    function validateStep2() {
+        const requiredFields = [
+            { id: 'contactName', name: 'Contact Person Name', errorId: 'contactNameError' },
+            { id: 'phoneNumber', name: 'Phone Number', errorId: 'phoneNumberError' },
+            { id: 'emailAddress', name: 'Email Address', errorId: 'emailAddressError' },
+            { id: 'preferredCommunication', name: 'Preferred Communication', errorId: 'preferredCommunicationError' }
+        ];
+        
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (!element) return;
             
-            clearError(id + 'Error');
-            return true;
-        }
-
-        // Clear error message
-        function clearError(errorId) {
-            const errorEl = document.getElementById(errorId);
-            if (errorEl) {
-                errorEl.style.display = 'none';
-                errorEl.textContent = '';
-            }
-        }
-
-        // Show error message
-        function showError(errorId, message) {
-            const errorEl = document.getElementById(errorId);
-            if (errorEl) {
-                errorEl.textContent = message;
-                errorEl.style.display = 'block';
-            }
-        }
-
-        // Show message banner
-        function showMessage(type, text) {
-            messageEl.className = `message ${type}`;
-            messageEl.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                <span>${text}</span>
-            `;
-            messageEl.style.display = 'flex';
+            const value = element.value.trim();
             
-            // Auto hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageEl.style.display = 'none';
-                }, 5000);
+            if (!value) {
+                showError(field.errorId, `${field.name} is required`);
+                isValid = false;
+            } else if (field.id === 'emailAddress') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showError(field.errorId, 'Please enter a valid email address');
+                    isValid = false;
+                }
+            } else if (field.id === 'phoneNumber') {
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                if (!phoneRegex.test(value.replace(/\D/g, ''))) {
+                    showError(field.errorId, 'Please enter a valid phone number');
+                    isValid = false;
+                }
+            }
+        });
+        
+        return isValid;
+    }
+
+    // Validate step 3 fields
+    function validateStep3() {
+        let isValid = true;
+        
+        // Check required files
+        if (!state.uploadedFiles.govId) {
+            showError('govIdError', 'Government ID is required');
+            isValid = false;
+        }
+        
+        if (!state.uploadedFiles.license) {
+            showError('licenseError', 'Business License is required');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+
+    // Validate step 4 fields
+    function validateStep4() {
+        const requiredFields = [
+            { id: 'bankName', name: 'Bank Name', errorId: 'bankNameError' },
+            { id: 'accountNumber', name: 'Account Number', errorId: 'accountNumberError' },
+            { id: 'accountType', name: 'Account Type', errorId: 'accountTypeError' }
+        ];
+        
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (!element) return;
+            
+            const value = element.value.trim();
+            
+            if (!value) {
+                showError(field.errorId, `${field.name} is required`);
+                isValid = false;
+            }
+        });
+        
+        return isValid;
+    }
+
+    // Validate individual field
+    function validateField(element) {
+        if (!element) return true;
+        
+        const value = element.value.trim();
+        const id = element.id;
+        
+        // Find the label for this field
+        const label = element.previousElementSibling;
+        const fieldName = label ? label.textContent.replace('*', '').trim() : 'This field';
+        
+        if (element.hasAttribute('required') && !value) {
+            showError(id + 'Error', `${fieldName} is required`);
+            return false;
+        }
+        
+        clearError(id + 'Error');
+        return true;
+    }
+
+    // Clear error message
+    function clearError(errorId) {
+        const errorEl = document.getElementById(errorId);
+        if (errorEl) {
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+        }
+    }
+
+    // Show error message
+    function showError(errorId, message) {
+        const errorEl = document.getElementById(errorId);
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        } else {
+            console.warn(`Error element with ID ${errorId} not found`);
+        }
+    }
+
+    // Show message banner
+    function showMessage(type, text) {
+        if (!messageEl) return;
+        
+        messageEl.className = `message ${type}`;
+        messageEl.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${text}</span>
+        `;
+        messageEl.style.display = 'flex';
+        
+        // Auto hide success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    // Upload file to Supabase Storage
+    async function uploadFile(file, path) {
+        try {
+            // In a real application, you would upload to Supabase Storage
+            // For this example, we'll return a mock URL
+            // Actual implementation would be:
+            // const { data, error } = await supabase.storage
+            //     .from('business-documents')
+            //     .upload(path, file);
+            
+            // if (error) throw error;
+            // return data.path;
+            
+            // Mock upload - in production, remove this and use above code
+            return `https://example.com/uploads/${Date.now()}_${file.name}`;
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            throw new Error(`Failed to upload ${file.name}`);
+        }
+    }
+
+    // Submit the form
+    async function submitForm() {
+        // First check if user is logged in
+        if (!state.userId) {
+            showMessage('error', 'Please login first.');
+            setTimeout(() => {
+                window.location.href = 'provider-registration.html';
+            }, 2000);
+            return;
+        }
+        
+        // Validate all steps
+        for (let i = 1; i <= state.totalSteps; i++) {
+            state.currentStep = i;
+            if (!validateCurrentStep()) {
+                updateFormDisplay();
+                showMessage('error', 'Please fix all errors before submitting.');
+                return;
             }
         }
-
-        // Upload file to Supabase Storage
-        async function uploadFile(file, path) {
+        
+        // Show loading state
+        state.isLoading = true;
+        submitBtn.disabled = true;
+        submitBtn.querySelector('.loader').style.display = 'block';
+        submitBtn.querySelector('span').textContent = 'Submitting...';
+        
+        try {
+            // Upload files and get URLs
+            const govIdUrl = await uploadFile(state.uploadedFiles.govId, 'government-id');
+            const licenseUrl = await uploadFile(state.uploadedFiles.license, 'business-license');
+            const insuranceUrl = state.uploadedFiles.insurance ? 
+                await uploadFile(state.uploadedFiles.insurance, 'insurance-certificate') : null;
+            const certificateUrl = state.uploadedFiles.certificate ? 
+                await uploadFile(state.uploadedFiles.certificate, 'business-certificate') : null;
+            
+            // Parse JSON arrays
+            let otherLinks = [];
             try {
-                // In a real application, you would upload to Supabase Storage
-                // For this example, we'll return a mock URL
-                // Actual implementation would be:
-                // const { data, error } = await supabase.storage
-                //     .from('business-documents')
-                //     .upload(path, file);
-                
-                // if (error) throw error;
-                // return data.path;
-                
-                // Mock upload - in production, remove this and use above code
-                return `https://example.com/uploads/${Date.now()}_${file.name}`;
-            } catch (error) {
-                console.error('Error uploading file:', error);
-                throw new Error(`Failed to upload ${file.name}`);
-            }
-        }
-
-        // Submit the form
-        async function submitForm() {
-            // Validate all steps
-            for (let i = 1; i <= state.totalSteps; i++) {
-                state.currentStep = i;
-                if (!validateCurrentStep()) {
-                    updateFormDisplay();
-                    showMessage('error', 'Please fix all errors before submitting.');
-                    return;
+                const otherLinksInput = document.getElementById('otherLinks')?.value.trim();
+                if (otherLinksInput) {
+                    otherLinks = JSON.parse(otherLinksInput);
                 }
+            } catch (e) {
+                console.warn('Invalid otherLinks format');
             }
             
-            // Show loading state
-            state.isLoading = true;
-            submitBtn.disabled = true;
-            submitBtn.querySelector('.loader').style.display = 'block';
-            submitBtn.querySelector('span').textContent = 'Submitting...';
-            
+            let subBusinessTypes = [];
             try {
-                // Upload files and get URLs
-                const govIdUrl = await uploadFile(state.uploadedFiles.govId, 'government-id');
-                const licenseUrl = await uploadFile(state.uploadedFiles.license, 'business-license');
-                const insuranceUrl = state.uploadedFiles.insurance ? 
-                    await uploadFile(state.uploadedFiles.insurance, 'insurance-certificate') : null;
-                const certificateUrl = state.uploadedFiles.certificate ? 
-                    await uploadFile(state.uploadedFiles.certificate, 'business-certificate') : null;
-                
-                // Parse JSON arrays
-                let otherLinks = [];
-                try {
-                    const otherLinksInput = document.getElementById('otherLinks').value.trim();
-                    if (otherLinksInput) {
-                        otherLinks = JSON.parse(otherLinksInput);
-                    }
-                } catch (e) {
-                    console.warn('Invalid otherLinks format');
+                const subTypesInput = document.getElementById('subBusinessTypes')?.value.trim();
+                if (subTypesInput) {
+                    subBusinessTypes = JSON.parse(subTypesInput);
                 }
-                
-                let subBusinessTypes = [];
-                try {
-                    const subTypesInput = document.getElementById('subBusinessTypes').value.trim();
-                    if (subTypesInput) {
-                        subBusinessTypes = JSON.parse(subTypesInput);
-                    }
-                } catch (e) {
-                    console.warn('Invalid subBusinessTypes format');
-                }
-                
-                // Prepare data for business_registrations table
-                const businessData = {
-                    user_id: state.userId,
-                    business_name: document.getElementById('businessName').value.trim(),
-                    business_type_id: document.getElementById('businessType').value,
-                    registration_number: document.getElementById('registrationNumber').value.trim(),
-                    vat_gst_number: document.getElementById('vatGstNumber').value.trim() || null,
-                    website: document.getElementById('website').value.trim() || null,
-                    business_license_url: licenseUrl,
-                    business_address: document.getElementById('businessAddress').value.trim(),
-                    cities_served: state.cities,
-                    service_area: document.getElementById('serviceArea').value.trim() || null,
-                    years_in_business: parseInt(document.getElementById('yearsInBusiness').value),
-                    about_services: document.getElementById('aboutServices').value.trim(),
-                    contact_name: document.getElementById('contactName').value.trim(),
-                    phone_number: document.getElementById('phoneNumber').value.trim(),
-                    email_address: document.getElementById('emailAddress').value.trim(),
-                    alternate_contact: document.getElementById('alternateContact').value.trim() || null,
-                    preferred_communication: document.getElementById('preferredCommunication').value,
-                    linkedin_profile: document.getElementById('linkedinProfile').value.trim() || null,
-                    facebook_page: document.getElementById('facebookPage').value.trim() || null,
-                    instagram_handle: document.getElementById('instagramHandle').value.trim() || null,
-                    other_links: otherLinks,
-                    government_id_url: govIdUrl,
-                    business_certificate_url: certificateUrl,
-                    insurance_certificate_url: insuranceUrl,
-                    bank_name: document.getElementById('bankName').value.trim(),
-                    account_number: document.getElementById('accountNumber').value.trim(),
-                    account_type: document.getElementById('accountType').value,
-                    ifsc_code: document.getElementById('ifscCode').value.trim() || null,
-                    status: 'pending',
-                    sub_business_types: subBusinessTypes,
-                    service_radius: parseInt(document.getElementById('serviceRadius').value) || 10,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
-                
-                // Insert data into business_registrations table
-                const { data, error } = await supabase
-                    .from('business_registrations')
-                    .insert([businessData])
-                    .select();
-                
-                if (error) throw error;
-                
-                // Success!
-                showMessage('success', 'Business registration submitted successfully! Your application is under review.');
-                
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    resetForm();
-                    state.currentStep = 1;
-                    updateFormDisplay();
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                showMessage('error', `Submission failed: ${error.message}`);
-            } finally {
-                // Reset loading state
-                state.isLoading = false;
-                submitBtn.disabled = false;
-                submitBtn.querySelector('.loader').style.display = 'none';
-                submitBtn.querySelector('span').textContent = 'Submit Registration';
+            } catch (e) {
+                console.warn('Invalid subBusinessTypes format');
             }
-        }
-
-        // Reset the form
-        function resetForm() {
-            // Reset form fields
-            document.querySelectorAll('input:not([type="file"]), select, textarea').forEach(element => {
-                if (element.type === 'checkbox' || element.type === 'radio') {
-                    element.checked = false;
-                } else {
-                    element.value = '';
-                }
-            });
             
-            // Reset file uploads
-            document.querySelectorAll('input[type="file"]').forEach(element => {
-                element.value = '';
-            });
-            
-            document.querySelectorAll('.file-name').forEach(element => {
-                element.textContent = 'No file chosen';
-            });
-            
-            // Reset state
-            state.cities = [];
-            state.uploadedFiles = {
-                govId: null,
-                license: null,
-                insurance: null,
-                certificate: null
+            // Prepare data for business_registrations table
+            const businessData = {
+                user_id: state.userId,
+                business_name: document.getElementById('businessName').value.trim(),
+                business_type_id: document.getElementById('businessType').value,
+                registration_number: document.getElementById('registrationNumber').value.trim(),
+                vat_gst_number: document.getElementById('vatGstNumber')?.value.trim() || null,
+                website: document.getElementById('website')?.value.trim() || null,
+                business_license_url: licenseUrl,
+                business_address: document.getElementById('businessAddress').value.trim(),
+                cities_served: state.cities,
+                service_area: document.getElementById('serviceArea')?.value.trim() || null,
+                years_in_business: parseInt(document.getElementById('yearsInBusiness').value),
+                about_services: document.getElementById('aboutServices').value.trim(),
+                contact_name: document.getElementById('contactName').value.trim(),
+                phone_number: document.getElementById('phoneNumber').value.trim(),
+                email_address: document.getElementById('emailAddress').value.trim(),
+                alternate_contact: document.getElementById('alternateContact')?.value.trim() || null,
+                preferred_communication: document.getElementById('preferredCommunication').value,
+                linkedin_profile: document.getElementById('linkedinProfile')?.value.trim() || null,
+                facebook_page: document.getElementById('facebookPage')?.value.trim() || null,
+                instagram_handle: document.getElementById('instagramHandle')?.value.trim() || null,
+                other_links: otherLinks,
+                government_id_url: govIdUrl,
+                business_certificate_url: certificateUrl,
+                insurance_certificate_url: insuranceUrl,
+                bank_name: document.getElementById('bankName').value.trim(),
+                account_number: document.getElementById('accountNumber').value.trim(),
+                account_type: document.getElementById('accountType').value,
+                ifsc_code: document.getElementById('ifscCode')?.value.trim() || null,
+                status: 'pending',
+                sub_business_types: subBusinessTypes,
+                service_radius: parseInt(document.getElementById('serviceRadius')?.value || 10),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
             };
             
-            // Clear errors
-            document.querySelectorAll('.form-error').forEach(element => {
-                element.style.display = 'none';
-                element.textContent = '';
-            });
+            console.log('Submitting business data:', businessData);
             
-            // Render empty cities
-            renderCities();
+            // Insert data into business_registrations table
+            const { data, error } = await supabase
+                .from('business_registrations')
+                .insert([businessData])
+                .select();
             
-            // Hide message
+            if (error) throw error;
+            
+            // Success!
+            showMessage('success', 'Business registration submitted successfully! Your application is under review.');
+            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                resetForm();
+                state.currentStep = 1;
+                updateFormDisplay();
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            showMessage('error', `Submission failed: ${error.message}`);
+        } finally {
+            // Reset loading state
+            state.isLoading = false;
+            submitBtn.disabled = false;
+            submitBtn.querySelector('.loader').style.display = 'none';
+            submitBtn.querySelector('span').textContent = 'Submit Registration';
+        }
+    }
+
+    // Reset the form
+    function resetForm() {
+        // Reset form fields
+        document.querySelectorAll('input:not([type="file"]), select, textarea').forEach(element => {
+            if (element.type === 'checkbox' || element.type === 'radio') {
+                element.checked = false;
+            } else {
+                element.value = '';
+            }
+        });
+        
+        // Reset file uploads
+        document.querySelectorAll('input[type="file"]').forEach(element => {
+            element.value = '';
+        });
+        
+        document.querySelectorAll('.file-name').forEach(element => {
+            element.textContent = 'No file chosen';
+        });
+        
+        // Reset state
+        state.cities = [];
+        state.uploadedFiles = {
+            govId: null,
+            license: null,
+            insurance: null,
+            certificate: null
+        };
+        
+        // Clear errors
+        document.querySelectorAll('.form-error').forEach(element => {
+            element.style.display = 'none';
+            element.textContent = '';
+        });
+        
+        // Render empty cities
+        renderCities();
+        
+        // Hide message
+        if (messageEl) {
             messageEl.style.display = 'none';
         }
+    }
 
-        // Make removeCity function available globally
-        window.removeCity = removeCity;
-    </script>
+    // Make removeCity function available globally
+    window.removeCity = removeCity;
+</script>
 </body>
 </html>
